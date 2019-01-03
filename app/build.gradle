@@ -13,7 +13,7 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.gelostech.whatsappstories"
+        applicationId "com.job.whatsappstories"
         minSdkVersion 17
         targetSdkVersion 27
         versionCode 1

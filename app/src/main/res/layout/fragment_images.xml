@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ImagesFragment">
 
-    <TextView
-        android:id="@+id/empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <include
+        layout="@layout/image_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:visibility="gone"
-        android:text="@string/empty"/>
+        tools:visibility="visible"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv"

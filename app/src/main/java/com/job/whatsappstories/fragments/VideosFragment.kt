@@ -19,6 +19,7 @@ import com.job.whatsappstories.utils.RecyclerFormatter
 import com.job.whatsappstories.utils.hideView
 import com.job.whatsappstories.utils.showView
 import kotlinx.android.synthetic.main.fragment_videos.*
+import kotlinx.android.synthetic.main.video_empty.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.File
@@ -70,6 +71,7 @@ class VideosFragment : BaseFragment(), StoryCallback {
                 if (files.isNotEmpty()) {
                     hasStories()
 
+
                     for (file in files.sortedBy { it.lastModified() }.reversed()) {
                         val story = Story(K.TYPE_VIDEO, file.absolutePath)
                         adapter.addStory(story)
@@ -86,11 +88,11 @@ class VideosFragment : BaseFragment(), StoryCallback {
 
     private fun noStories() {
         rv?.hideView()
-        empty?.showView()
+        videoEmptyView?.showView()
     }
 
     private fun hasStories() {
-        empty?.hideView()
+        videoEmptyView?.hideView()
         rv?.showView()
     }
 

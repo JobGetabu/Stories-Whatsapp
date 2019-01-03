@@ -7,18 +7,18 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.job.whatsappstories.R
-import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.adapters.StoriesAdapter
 import com.job.whatsappstories.callbacks.StoryCallback
 import com.job.whatsappstories.commoners.BaseFragment
 import com.job.whatsappstories.commoners.K
 import com.job.whatsappstories.commoners.StoryOverview
+import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.RecyclerFormatter
 import com.job.whatsappstories.utils.hideView
 import com.job.whatsappstories.utils.showView
 import kotlinx.android.synthetic.main.fragment_images.*
+import kotlinx.android.synthetic.main.image_empty.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.File
@@ -71,6 +71,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
 
                 if (files.isNotEmpty()) {
                     hasStories()
+
                     if (refreshing) adapter.clearStories()
 
                     for (file in files.sortedBy { it.lastModified() }.reversed()) {
@@ -90,11 +91,11 @@ class ImagesFragment : BaseFragment(), StoryCallback {
 
     private fun noStories() {
         rv?.hideView()
-        empty?.showView()
+        imageEmptyView?.showView()
     }
 
     private fun hasStories() {
-        empty?.hideView()
+        imageEmptyView?.hideView()
         rv?.showView()
     }
 

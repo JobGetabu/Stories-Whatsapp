@@ -21,6 +21,7 @@ import com.job.whatsappstories.utils.RecyclerFormatter
 import com.job.whatsappstories.utils.hideView
 import com.job.whatsappstories.utils.showView
 import kotlinx.android.synthetic.main.fragment_saved.*
+import kotlinx.android.synthetic.main.saved_empty.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.File
@@ -94,11 +95,11 @@ class SavedFragment : BaseFragment(), StoryCallback {
 
     private fun noStories() {
         rv?.hideView()
-        empty?.showView()
+        savedEmptyView?.showView()
     }
 
     private fun hasStories() {
-        empty?.hideView()
+        savedEmptyView?.hideView()
         rv?.showView()
     }
 

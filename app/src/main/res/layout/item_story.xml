@@ -8,15 +8,15 @@
 
         <variable
             name="story"
-            type="com.gelostech.whatsappstories.models.Story"/>
+            type="com.job.whatsappstories.models.Story"/>
 
         <variable
             name="callback"
-            type="com.gelostech.whatsappstories.callbacks.StoryCallback"/>
+            type="com.job.whatsappstories.callbacks.StoryCallback"/>
 
     </data>
 
-    <com.gelostech.whatsappstories.utils.SquareLayout
+    <com.job.whatsappstories.utils.SquareLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{(v) -> callback.onStoryClicked(v, story)}">

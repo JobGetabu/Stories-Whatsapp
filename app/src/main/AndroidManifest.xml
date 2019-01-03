@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gelostech.whatsappstories">
+    package="com.job.whatsappstories">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".commoners.Application"
+        android:name="com.job.whatsappstories.commoners.Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MyMaterialTheme">
-        <activity android:name=".activities.MainActivity">
+        <activity android:name="com.job.whatsappstories.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".commoners.BaseActivity" />
-        <activity android:name=".activities.ImageActivity" />
-        <activity android:name=".activities.VideoActivity"></activity>
+        <activity android:name="com.job.whatsappstories.commoners.BaseActivity" />
+        <activity android:name="com.job.whatsappstories.activities.ImageActivity" />
+        <activity android:name="com.job.whatsappstories.activities.VideoActivity"></activity>
     </application>
 
 </manifest>

@@ -9,4 +9,6 @@
     <string name="save">Save</string>
     <string name="share">Share</string>
     <string name="view">View</string>
+    <string name="saved_empty_txt">Save your favourite image or video and it will show up here</string>
+    <string name="video_empty_txt">Video Status of friends you\'ve viewed in Whatsapp will show here</string>
 </resources>

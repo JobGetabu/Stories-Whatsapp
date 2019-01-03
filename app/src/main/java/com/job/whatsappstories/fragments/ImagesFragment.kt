@@ -1,6 +1,8 @@
 package com.job.whatsappstories.fragments
 
 
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
@@ -16,16 +18,20 @@ import com.job.whatsappstories.commoners.StoryOverview
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.RecyclerFormatter
 import com.job.whatsappstories.utils.hideView
+import com.job.whatsappstories.utils.multipleOfTwo
 import com.job.whatsappstories.utils.showView
 import kotlinx.android.synthetic.main.fragment_images.*
 import kotlinx.android.synthetic.main.image_empty.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.io.File
 
 
 class ImagesFragment : BaseFragment(), StoryCallback {
     private lateinit var adapter: StoriesAdapter
+    private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var sharedPrefsEditor: SharedPreferences.Editor
     private var refreshing = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +45,12 @@ class ImagesFragment : BaseFragment(), StoryCallback {
 
         initViews()
         loadStories()
+        sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName,MODE_PRIVATE)
+        sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName,MODE_PRIVATE).edit()
+
+
+        testMyAdUtil()
+
     }
 
     private fun initViews() {
@@ -102,6 +114,18 @@ class ImagesFragment : BaseFragment(), StoryCallback {
     override fun onStoryClicked(v: View, story: Story) {
         val overview = StoryOverview(activity!!, story)
         overview.show()
+    }
+
+    private fun testMyAdUtil(){
+
+        val numList = 1..20
+
+        for (n in numList){
+            Timber.tag("nums").d("is $n divisible by 2 ${multipleOfTwo(n)}")
+            //Timber.d("is $n divisible by 5 ${multipleOfFive(n)}")
+
+        }
+
     }
 
 }

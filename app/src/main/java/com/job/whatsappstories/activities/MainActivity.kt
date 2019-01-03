@@ -47,7 +47,7 @@ class MainActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
         adapter.addAllTitles(IMAGES, VIDEOS, SAVED)
 
         viewpager.adapter = adapter
-        viewpager.offscreenPageLimit = 2
+        viewpager.offscreenPageLimit = 1
         viewpager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
 
     }

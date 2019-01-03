@@ -38,7 +38,7 @@
             android:visibility="@{(story.type == 0) ? View.GONE : View.VISIBLE}"
             android:contentDescription="@string/video_icon" />
 
-    </com.gelostech.whatsappstories.utils.SquareLayout>
+    </com.job.whatsappstories.utils.SquareLayout>
 
 </layout>
 

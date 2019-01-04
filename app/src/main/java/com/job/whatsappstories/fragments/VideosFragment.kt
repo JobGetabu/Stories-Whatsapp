@@ -83,8 +83,6 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         }
 
         val dir = File(K.WHATSAPP_STORIES)
-        if (!dir.exists())
-            dir.mkdirs()
 
         doAsync {
             val files = dir.listFiles { _, s ->
@@ -117,8 +115,6 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         }
 
         val dir = File(K.GBWHATSAPP_STORIES)
-        if (!dir.exists())
-            dir.mkdirs()
 
         doAsync {
             val files = dir.listFiles { _, s ->

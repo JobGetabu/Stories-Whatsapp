@@ -5,8 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.view.Window
+import cn.jzvd.JZVideoPlayer
 import cn.jzvd.JZVideoPlayerStandard
 import com.job.whatsappstories.R
 import com.job.whatsappstories.activities.ImageActivity
@@ -98,10 +100,23 @@ class StoryOverview : Dialog, View.OnClickListener {
                     }
 
                     K.TYPE_VIDEO -> {
-                        AppUtils.saveVideo(c, story.path!!)
+                        AppUtils.saveVideoFile(c, story.path!!)
                     }
                 }
             }
         }
+    }
+
+    override fun onBackPressed() {
+
+        JZVideoPlayer.backPress()
+        JZVideoPlayer.releaseAllVideos()
+        super.onBackPressed()
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+
+        JZVideoPlayer.releaseAllVideos()
+        return super.onTouchEvent(event)
     }
 }

@@ -36,12 +36,12 @@ object AppUtils {
     fun saveImage(context: Context, bitmap: Bitmap) {
 
         val file = File(K.SAVED_STORIES)
-        if(!file.exists()) file.mkdirs()
+        if (!file.exists()) file.mkdirs()
 
         val fileName = "Story-" + System.currentTimeMillis() + ".jpg"
 
         val newImage = File(file, fileName)
-        if(newImage.exists()) file.delete()
+        if (newImage.exists()) file.delete()
         try {
             val out = FileOutputStream(newImage)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
@@ -51,11 +51,11 @@ object AppUtils {
             if (Build.VERSION.SDK_INT >= 19) {
                 MediaScannerConnection.scanFile(context, arrayOf(newImage.absolutePath), null, null)
             } else {
-                context.sendBroadcast( Intent("android.intent.action.MEDIA_MOUNTED", Uri.fromFile(newImage)))
+                context.sendBroadcast(Intent("android.intent.action.MEDIA_MOUNTED", Uri.fromFile(newImage)))
             }
             context.toast("Story saved")
 
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Timber.e(e.localizedMessage)
         }
 
@@ -99,6 +99,21 @@ object AppUtils {
 
     }
 
+    fun saveVideoFile(context: Context, filePath: String) {
+        val currentFile = File(filePath)
+        val fileName = currentFile.name
+
+        try {
+            File(filePath).copyTo(File(K.SAVED_STORIES, fileName), true)
+            context.toast("Video saved")
+        } catch (e: Exception) {
+            Timber.tag("saveVid").e(e)
+            context.toast("Error saving video")
+        }
+
+
+    }
+
     fun shareImage(context: Context, bitmap: Bitmap) {
         val share = Intent(Intent.ACTION_SEND)
         share.type = "image/*"
@@ -115,11 +130,11 @@ object AppUtils {
             e.printStackTrace()
         }
 
-        if(Build.VERSION.SDK_INT>=24){
-            try{
+        if (Build.VERSION.SDK_INT >= 24) {
+            try {
                 val m = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
                 m.invoke(null)
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

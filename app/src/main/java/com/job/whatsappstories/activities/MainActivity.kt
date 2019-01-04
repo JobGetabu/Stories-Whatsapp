@@ -12,9 +12,11 @@ import com.job.whatsappstories.fragments.VideosFragment
 import com.job.whatsappstories.utils.PagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.toast
+import timber.log.Timber
 
 class MainActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
     private var doubleBackToExit = false
+    private lateinit var adapter: PagerAdapter
 
     companion object {
         private const val IMAGES = "IMAGES"
@@ -38,14 +40,14 @@ class MainActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
     }
 
     private fun setupViewPager() {
-        val adapter = PagerAdapter(supportFragmentManager, this)
+        adapter = PagerAdapter(supportFragmentManager, this)
         val images = ImagesFragment()
         val videos = VideosFragment()
         val saved = SavedFragment()
 
         adapter.addAllFrags(images, videos, saved)
         adapter.addAllTitles(IMAGES, VIDEOS, SAVED)
-
+        viewpager.offscreenPageLimit = 2
         viewpager.adapter = adapter
         viewpager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
 
@@ -84,4 +86,8 @@ class MainActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
         }
     }
 
+    fun refreshPages(){
+        adapter.notifyDataSetChanged()
+        Timber.d("Refresh works :)")
+    }
 }

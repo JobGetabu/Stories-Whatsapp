@@ -18,14 +18,14 @@ import com.job.whatsappstories.commoners.K
 import com.job.whatsappstories.commoners.StoryOverview
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.*
+import com.job.whatsappstories.utils.Constants.WHATAPP_PACKAGE_NAME
 import kotlinx.android.synthetic.main.fragment_images.*
 import kotlinx.android.synthetic.main.image_empty.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.File
 
-
-class ImagesFragment : BaseFragment(), StoryCallback {
+ class ImagesFragment : BaseFragment(), StoryCallback {
     private lateinit var adapter: StoriesAdapter
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var sharedPrefsEditor: SharedPreferences.Editor
@@ -49,15 +49,13 @@ class ImagesFragment : BaseFragment(), StoryCallback {
             return
         }
 
-        val dirGB = File(K.GBWHATSAPP_STORIES)
-        val dir = File(K.WHATSAPP_STORIES)
 
-        if (!dir.exists()) {
-            if (dirGB.exists()) loadStoriesGB()
-
-        }else if(!dirGB.exists()) {
-            if (dir.exists()) loadStories()
+        if(isPackageInstalled(WHATAPP_PACKAGE_NAME,activity!!.packageManager)){
+            loadStories()
+        }else{
+            loadStoriesGB()
         }
+
 
 
         sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE)
@@ -146,9 +144,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
                     noStories()
                 }
             }
-
         }
-
     }
 
     private fun noStories() {
@@ -162,10 +158,11 @@ class ImagesFragment : BaseFragment(), StoryCallback {
     }
 
     override fun onStoryClicked(v: View, story: Story) {
-        val overview = StoryOverview(activity!!, story)
+        val overview = StoryOverview(activity!!, story, activity!!)
         overview.show()
 
         adBizLogicImg(mInterstitialAd,story, sharedPrefsEditor, sharedPrefs)
     }
+
 
 }

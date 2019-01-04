@@ -45,14 +45,11 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-        val dirGB = File(K.GBWHATSAPP_STORIES)
-        val dir = File(K.WHATSAPP_STORIES)
 
-        if (!dir.exists()) {
-            if (dirGB.exists()) loadStoriesGB()
-
-        }else if(!dirGB.exists()) {
-            if (dir.exists()) loadStories()
+        if(isPackageInstalled(Constants.WHATAPP_PACKAGE_NAME,activity!!.packageManager)){
+            loadStories()
+        }else{
+            loadStoriesGB()
         }
 
         sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, Context.MODE_PRIVATE)
@@ -151,7 +148,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
     }
 
     override fun onStoryClicked(v: View, story: Story) {
-        val overview = StoryOverview(activity!!, story)
+        val overview = StoryOverview(activity!!, story, activity!!)
         overview.show()
 
         adBizLogicVideo(mRewardedVideoAd,story, sharedPrefsEditor,sharedPrefs)

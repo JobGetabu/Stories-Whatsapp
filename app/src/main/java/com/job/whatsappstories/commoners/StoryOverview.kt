@@ -1,5 +1,6 @@
 package com.job.whatsappstories.commoners
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -12,6 +13,7 @@ import cn.jzvd.JZVideoPlayer
 import cn.jzvd.JZVideoPlayerStandard
 import com.job.whatsappstories.R
 import com.job.whatsappstories.activities.ImageActivity
+import com.job.whatsappstories.activities.MainActivity
 import com.job.whatsappstories.activities.VideoActivity
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.loadUrl
@@ -23,10 +25,12 @@ import kotlinx.android.synthetic.main.overview_story.*
 class StoryOverview : Dialog, View.OnClickListener {
     private var story: Story
     private var c: Context
+    private var mainActivity: Activity
 
-    constructor(context: Context, story: Story): super(context) {
+    constructor(context: Context, story: Story, mainActivity: Activity): super(context) {
         this.c = context
         this.story = story
+        this.mainActivity = mainActivity
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +53,8 @@ class StoryOverview : Dialog, View.OnClickListener {
         }
 
     }
+
+
 
     private fun loadImageStory() {
         image?.showView()
@@ -97,10 +103,13 @@ class StoryOverview : Dialog, View.OnClickListener {
                     K.TYPE_IMAGE -> {
                         val image = BitmapFactory.decodeFile(story.path,BitmapFactory.Options())
                         AppUtils.saveImage(c,image)
+
+                        (mainActivity as MainActivity).refreshPages()
                     }
 
                     K.TYPE_VIDEO -> {
                         AppUtils.saveVideoFile(c, story.path!!)
+                        (mainActivity as MainActivity).refreshPages()
                     }
                 }
             }

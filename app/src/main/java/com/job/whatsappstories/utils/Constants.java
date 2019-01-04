@@ -7,4 +7,7 @@ public class Constants {
     public static final String IMAGE_SAVE_CLICKS = "IMAGE_SAVE_CLICKS";
     public static final String VIDEO_SAVE_CLICKS = "VIDEO_SAVE_CLICKS";
 
+    public static final String GBWHATAPP_PACKAGE_NAME = "com.gbwhatsapp";
+    public static final String WHATAPP_PACKAGE_NAME = "com.whatsapp";
+
 }

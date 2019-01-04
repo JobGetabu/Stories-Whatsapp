@@ -104,7 +104,7 @@ class SavedFragment : BaseFragment(), StoryCallback {
     }
 
     override fun onStoryClicked(v: View, story: Story) {
-        val overview = StoryOverview(activity!!, story)
+        val overview = StoryOverview(activity!!, story,activity!!)
         overview.show()
     }
 

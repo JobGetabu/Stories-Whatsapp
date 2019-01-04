@@ -2,6 +2,7 @@ package com.job.whatsappstories.utils
 
 import android.app.Activity
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
@@ -10,6 +11,8 @@ import com.job.whatsappstories.BuildConfig
 import com.job.whatsappstories.R
 import com.job.whatsappstories.models.Story
 import timber.log.Timber
+
+
 
 /**
  * Created by Job on Friday : 1/4/2019.
@@ -129,5 +132,13 @@ fun adBizListner(mInterstitialAd: InterstitialAd) {
             // Code to be executed when when the interstitial ad is closed.
             mInterstitialAd.loadAd(AdRequest.Builder().build())
         }
+    }
+}
+
+fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {
+    try {
+        return packageManager.getApplicationInfo(packageName, 0).enabled
+    } catch (e: PackageManager.NameNotFoundException) {
+        return false
     }
 }

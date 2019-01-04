@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.job.whatsappstories.BuildConfig
 import com.job.whatsappstories.R
 import com.job.whatsappstories.models.Story
@@ -18,6 +19,8 @@ import timber.log.Timber
 fun multipleOfTwo(num: Int) = num % 2 == 0
 
 fun multipleOfFive(num: Int) = num % 5 == 0
+
+fun multipleOfSeven(num: Int) = num % 7 == 0
 
 fun initLoadAdUnit(mInterstitialAd: InterstitialAd, activity: Activity) {
     with(mInterstitialAd) {
@@ -33,7 +36,21 @@ fun initLoadAdUnit(mInterstitialAd: InterstitialAd, activity: Activity) {
     }
 }
 
-fun displayAd(mInterstitialAd: InterstitialAd) {
+fun initLoadVideoAdUnit(mRewardedVideoAd: RewardedVideoAd, activity: Activity) {
+    with(mRewardedVideoAd) {
+        if (BuildConfig.DEBUG) {
+            loadAd(activity.getString(R.string.test_video_rewarded_ad),
+                    AdRequest.Builder().build())
+
+        } else {
+            loadAd(activity.getString(R.string.production_video_rewarded_ad),
+                    AdRequest.Builder().build())
+
+        }
+    }
+}
+
+fun displayImgAd(mInterstitialAd: InterstitialAd) {
     if (mInterstitialAd.isLoaded) {
         mInterstitialAd.show()
     } else {
@@ -41,31 +58,55 @@ fun displayAd(mInterstitialAd: InterstitialAd) {
     }
 }
 
-fun adBizLogic(mInterstitialAd: InterstitialAd, story: Story,
+fun displayVideoAd(mRewardedVideoAd: RewardedVideoAd) {
+    if (mRewardedVideoAd.isLoaded) {
+        mRewardedVideoAd.show()
+    }
+}
+
+
+
+fun adBizLogicImg(mInterstitialAd: InterstitialAd, story: Story,
                sharedPrefsEditor: SharedPreferences.Editor, sharedPrefs: SharedPreferences) {
     val imgClickCount: Int = sharedPrefs.getInt(Constants.IMAGE_SAVE_CLICKS, 0)
     val vidClickCount: Int = sharedPrefs.getInt(Constants.VIDEO_SAVE_CLICKS, 0)
 
-    Timber.tag("AdUtil").d("imgClickCount = ${imgClickCount} story.type = ${story.type}")
-    //Timber.tag("AdUtil").d("vidClickCount = $vidClickCount   story.type = ${story.type}")
 
     if (story.type == 0) {
         val resultImg: Int = imgClickCount + 1
         sharedPrefsEditor.putInt(Constants.IMAGE_SAVE_CLICKS, resultImg)
 
-        if (multipleOfFive(resultImg)) displayAd(mInterstitialAd)
+        Timber.tag("AdUtil").d("imgClickCount = ${imgClickCount} story.type = ${story.type}")
+        if (multipleOfFive(resultImg)) displayImgAd(mInterstitialAd)
 
     } else {
         val resultVid: Int = vidClickCount + 1
         sharedPrefsEditor.putInt(Constants.VIDEO_SAVE_CLICKS, resultVid)
 
-        if (multipleOfFive(resultVid)) displayAd(mInterstitialAd)
+        Timber.tag("AdUtil").d("vidClickCount = $vidClickCount   story.type = ${story.type}")
+        if (multipleOfFive(resultVid)) displayImgAd(mInterstitialAd)
     }
     sharedPrefsEditor.apply()
 }
 
-fun adBizListner(mInterstitialAd: InterstitialAd){
-    mInterstitialAd.adListener = object: AdListener() {
+fun adBizLogicVideo(mRewardedVideoAd: RewardedVideoAd, story: Story,
+                  sharedPrefsEditor: SharedPreferences.Editor, sharedPrefs: SharedPreferences) {
+
+    val vidClickCount: Int = sharedPrefs.getInt(Constants.VIDEO_SAVE_CLICKS, 0)
+
+    if (story.type == 1) {
+        val resultVid: Int = vidClickCount + 1
+        sharedPrefsEditor.putInt(Constants.VIDEO_SAVE_CLICKS, resultVid)
+
+        Timber.tag("AdUtil").d("vidClickCount = $vidClickCount   story.type = ${story.type}")
+        if (multipleOfSeven(resultVid)) displayVideoAd(mRewardedVideoAd)
+
+    }
+    sharedPrefsEditor.apply()
+}
+
+fun adBizListner(mInterstitialAd: InterstitialAd) {
+    mInterstitialAd.adListener = object : AdListener() {
         override fun onAdLoaded() {
             // Code to be executed when an ad finishes loading.
         }

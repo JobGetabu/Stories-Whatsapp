@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.fragment_images.*
 import kotlinx.android.synthetic.main.image_empty.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
-import timber.log.Timber
 import java.io.File
 
 
@@ -118,9 +117,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         val overview = StoryOverview(activity!!, story)
         overview.show()
 
-        Timber.tag("images").d("clicked view =${v.id} "+story.toString())
-
-        adBizLogic(mInterstitialAd,story, sharedPrefsEditor, sharedPrefs)
+        adBizLogicImg(mInterstitialAd,story, sharedPrefsEditor, sharedPrefs)
     }
 
 }

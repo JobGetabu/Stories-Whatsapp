@@ -9,6 +9,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.ads.InterstitialAd
 import com.job.whatsappstories.R
 import com.job.whatsappstories.adapters.StoriesAdapter
 import com.job.whatsappstories.callbacks.StoryCallback
@@ -16,10 +17,7 @@ import com.job.whatsappstories.commoners.BaseFragment
 import com.job.whatsappstories.commoners.K
 import com.job.whatsappstories.commoners.StoryOverview
 import com.job.whatsappstories.models.Story
-import com.job.whatsappstories.utils.RecyclerFormatter
-import com.job.whatsappstories.utils.hideView
-import com.job.whatsappstories.utils.multipleOfTwo
-import com.job.whatsappstories.utils.showView
+import com.job.whatsappstories.utils.*
 import kotlinx.android.synthetic.main.fragment_images.*
 import kotlinx.android.synthetic.main.image_empty.*
 import org.jetbrains.anko.doAsync
@@ -32,6 +30,9 @@ class ImagesFragment : BaseFragment(), StoryCallback {
     private lateinit var adapter: StoriesAdapter
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var sharedPrefsEditor: SharedPreferences.Editor
+
+    private lateinit var mInterstitialAd: InterstitialAd
+
     private var refreshing = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -45,11 +46,12 @@ class ImagesFragment : BaseFragment(), StoryCallback {
 
         initViews()
         loadStories()
-        sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName,MODE_PRIVATE)
-        sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName,MODE_PRIVATE).edit()
+        sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE)
+        sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE).edit()
 
-
-        testMyAdUtil()
+        mInterstitialAd = InterstitialAd(context)
+        initLoadAdUnit(mInterstitialAd,activity!!)
+        adBizListner(mInterstitialAd)
 
     }
 
@@ -77,7 +79,8 @@ class ImagesFragment : BaseFragment(), StoryCallback {
 
         doAsync {
             val files = dir.listFiles { _, s ->
-                s.endsWith(".png") || s.endsWith(".jpg") || s.endsWith(".jpeg") }
+                s.endsWith(".png") || s.endsWith(".jpg") || s.endsWith(".jpeg")
+            }
 
             uiThread {
 
@@ -114,18 +117,10 @@ class ImagesFragment : BaseFragment(), StoryCallback {
     override fun onStoryClicked(v: View, story: Story) {
         val overview = StoryOverview(activity!!, story)
         overview.show()
-    }
 
-    private fun testMyAdUtil(){
+        Timber.tag("images").d("clicked view =${v.id} "+story.toString())
 
-        val numList = 1..20
-
-        for (n in numList){
-            Timber.tag("nums").d("is $n divisible by 2 ${multipleOfTwo(n)}")
-            //Timber.d("is $n divisible by 5 ${multipleOfFive(n)}")
-
-        }
-
+        adBizLogic(mInterstitialAd,story, sharedPrefsEditor, sharedPrefs)
     }
 
 }

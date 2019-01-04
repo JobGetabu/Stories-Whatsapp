@@ -4,9 +4,11 @@
 
     <!--AdMob ID-->
     <string name="admob_app_id">ca-app-pub-3733291416843196~1132657073</string>
+    <string name="test_unit_ad">ca-app-pub-3940256099942544/1033173712</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="production_unit_ad">ca-app-pub-3733291416843196/9269758276</string>
+
+
     <string name="video_icon">Video icon</string>
     <string name="empty">No stories added yet</string>
     <string name="empty_saved">No stories saved yet</string>

@@ -14,7 +14,8 @@ class RecyclerFormatter {
     class SimpleDividerItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
         private val mDivider: Drawable? = ContextCompat.getDrawable(context, R.drawable.simple_recycler_divider)
 
-        override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State?) {
+        override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+            //super.onDrawOver(c, parent, state)
             val left = parent.paddingLeft
             val right = parent.width - parent.paddingRight
 
@@ -36,7 +37,9 @@ class RecyclerFormatter {
     class DoubleDividerItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
         private val mDivider: Drawable? = ContextCompat.getDrawable(context, R.drawable.recycler_divider)
 
-        override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State?) {
+        override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+            //super.onDrawOver(c, parent, state)
+
             val left = parent.paddingLeft
             val right = parent.width - parent.paddingRight
 
@@ -57,7 +60,9 @@ class RecyclerFormatter {
 
     class GridItemDecoration(private val context: Context, private val spanCount: Int, private val space: Int) : RecyclerView.ItemDecoration() {
 
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State?) {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            //super.getItemOffsets(outRect, view, parent, state)
+
             //super.getItemOffsets(outRect, view, parent, state)
             val pos = parent.getChildAdapterPosition(view)
             val space = Math.round(space * context.resources.displayMetrics.density)

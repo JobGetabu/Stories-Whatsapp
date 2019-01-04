@@ -103,7 +103,6 @@ class StoryOverview : Dialog, View.OnClickListener {
                     K.TYPE_IMAGE -> {
                         val image = BitmapFactory.decodeFile(story.path,BitmapFactory.Options())
                         AppUtils.saveImage(c,image)
-
                         (mainActivity as MainActivity).refreshPages()
                     }
 

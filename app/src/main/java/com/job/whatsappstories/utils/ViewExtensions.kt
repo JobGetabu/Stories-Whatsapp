@@ -23,7 +23,6 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.github.chrisbanes.photoview.PhotoView
 import com.makeramen.roundedimageview.RoundedImageView
-import de.hdodenhof.circleimageview.CircleImageView
 
 inline fun <reified T : ViewDataBinding> ViewGroup.inflate(@LayoutRes layoutRes: Int): T {
     return DataBindingUtil.inflate(LayoutInflater.from(context), layoutRes, this, false)
@@ -45,20 +44,6 @@ fun ImageView.loadUrl(url: String) {
 
 fun RoundedImageView.loadUrl(url: String) {
     Glide.with(context)
-            .load(url)
-            .thumbnail(0.05f)
-            .into(this)
-}
-
-fun CircleImageView.loadUrl(url: Int) {
-    Glide.with(context)
-            .load(url)
-            .thumbnail(0.05f)
-            .into(this)
-}
-
-fun CircleImageView.loadUrl(url: String) {
-    Glide.with(context.applicationContext)
             .load(url)
             .thumbnail(0.05f)
             .into(this)

@@ -19,7 +19,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 ext.versionMajor = 1
 ext.versionMinor = 0
-ext.versionPatch = 0
+ext.versionPatch = 5
 ext.versionClassifier = null
 ext.isSnapshot = false  //only true while in development
 ext.minimumSdkVersion = 17
@@ -31,7 +31,7 @@ android {
         applicationId "com.job.whatsappstories"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode generateVersionCode() // 170010000
+        versionCode generateVersionCode() // 170010500
         versionName generateVersionName() // 1.0.0
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

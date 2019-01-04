@@ -12,23 +12,52 @@ apply plugin: 'com.google.gms.google-services'
 
 apply plugin: 'io.fabric'
 
+// Load keystore
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+ext.versionMajor = 1
+ext.versionMinor = 0
+ext.versionPatch = 0
+ext.versionClassifier = null
+ext.isSnapshot = false  //only true while in development
+ext.minimumSdkVersion = 17
+
+
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.job.whatsappstories"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode generateVersionCode() // 170010000
+        versionName generateVersionName() // 1.0.0
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
+
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.release
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-annotations.pro'
     }
 
     dataBinding {
@@ -105,4 +134,20 @@ dependencies {
 kapt {
     generateStubs = true
     mapDiagnosticLocations = true
+}
+
+private Integer generateVersionCode() {
+    return ext.minimumSdkVersion * 10000000 + ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
+}
+
+private String generateVersionName() {
+    String versionName = "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
+    if (ext.versionClassifier == null && ext.isSnapshot) {
+        ext.versionClassifier = "SNAPSHOT"
+    }
+
+    if (ext.versionClassifier != null) {
+        versionName += "-" + ext.versionClassifier
+    }
+    return versionName
 }

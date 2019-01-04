@@ -44,7 +44,22 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-        loadStories()
+        if (!storagePermissionGranted()) {
+            requestStoragePermission()
+            return
+        }
+
+        val dirGB = File(K.GBWHATSAPP_STORIES)
+        val dir = File(K.WHATSAPP_STORIES)
+
+        if (!dir.exists()) {
+            if (dirGB.exists()) loadStoriesGB()
+
+        }else if(!dirGB.exists()) {
+            if (dir.exists()) loadStories()
+        }
+
+
         sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE)
         sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE).edit()
 
@@ -73,6 +88,43 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         }
 
         val dir = File(K.WHATSAPP_STORIES)
+        if (!dir.exists())
+            dir.mkdirs()
+
+        doAsync {
+            val files = dir.listFiles { _, s ->
+                s.endsWith(".png") || s.endsWith(".jpg") || s.endsWith(".jpeg")
+            }
+
+            uiThread {
+
+                if (files.isNotEmpty()) {
+                    hasStories()
+
+                    if (refreshing) adapter.clearStories()
+
+                    for (file in files.sortedBy { it.lastModified() }.reversed()) {
+                        val story = Story(K.TYPE_IMAGE, file.absolutePath)
+                        adapter.addStory(story)
+                    }
+
+                    refreshing = false
+                } else {
+                    noStories()
+                }
+            }
+
+        }
+
+    }
+
+    private fun loadStoriesGB() {
+        if (!storagePermissionGranted()) {
+            requestStoragePermission()
+            return
+        }
+
+        val dir = File(K.GBWHATSAPP_STORIES)
         if (!dir.exists())
             dir.mkdirs()
 

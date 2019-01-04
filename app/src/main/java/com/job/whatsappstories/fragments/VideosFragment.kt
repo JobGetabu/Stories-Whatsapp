@@ -45,7 +45,15 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
-        loadStories()
+        val dirGB = File(K.GBWHATSAPP_STORIES)
+        val dir = File(K.WHATSAPP_STORIES)
+
+        if (!dir.exists()) {
+            if (dirGB.exists()) loadStoriesGB()
+
+        }else if(!dirGB.exists()) {
+            if (dir.exists()) loadStories()
+        }
 
         sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, Context.MODE_PRIVATE)
         sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, Context.MODE_PRIVATE).edit()
@@ -75,6 +83,40 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         }
 
         val dir = File(K.WHATSAPP_STORIES)
+        if (!dir.exists())
+            dir.mkdirs()
+
+        doAsync {
+            val files = dir.listFiles { _, s ->
+                s.endsWith(".mp4") || s.endsWith(".gif") }
+
+            uiThread {
+
+                if (files.isNotEmpty()) {
+                    hasStories()
+
+
+                    for (file in files.sortedBy { it.lastModified() }.reversed()) {
+                        val story = Story(K.TYPE_VIDEO, file.absolutePath)
+                        adapter.addStory(story)
+                    }
+
+                } else {
+                    noStories()
+                }
+            }
+
+        }
+
+    }
+
+    private fun loadStoriesGB() {
+        if (!storagePermissionGranted()) {
+            requestStoragePermission()
+            return
+        }
+
+        val dir = File(K.GBWHATSAPP_STORIES)
         if (!dir.exists())
             dir.mkdirs()
 

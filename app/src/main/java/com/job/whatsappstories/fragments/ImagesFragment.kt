@@ -1,6 +1,8 @@
 package com.job.whatsappstories.fragments
 
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -19,6 +21,7 @@ import com.job.whatsappstories.commoners.StoryOverview
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.*
 import com.job.whatsappstories.utils.Constants.WHATAPP_PACKAGE_NAME
+import com.job.whatsappstories.viewmodel.WhatsModel
 import kotlinx.android.synthetic.main.fragment_images.*
 import kotlinx.android.synthetic.main.image_empty.*
 import org.jetbrains.anko.doAsync
@@ -49,6 +52,11 @@ import java.io.File
             return
         }
 
+        val model = activity?.run {
+            ViewModelProviders.of(this).get(WhatsModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
+        fragObserver(model)
 
         if(isPackageInstalled(WHATAPP_PACKAGE_NAME,activity!!.packageManager)){
             loadStories()
@@ -66,6 +74,13 @@ import java.io.File
         adBizListner(mInterstitialAd)
 
     }
+
+     private fun fragObserver(model: WhatsModel) {
+
+         model.getCurrentFile().observe(this, Observer {
+             context!!.toast("Images -> Changed to $it")
+         })
+     }
 
     private fun initViews() {
         rv.setHasFixedSize(true)

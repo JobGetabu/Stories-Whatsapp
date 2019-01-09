@@ -76,6 +76,7 @@ import java.io.File
 
         adapter = StoriesAdapter(this, activity!!)
         rv.adapter = adapter
+        rv.showShimmerAdapter()
 
     }
 
@@ -104,12 +105,13 @@ import java.io.File
                         adapter.addStory(story)
                     }
 
+                    rv.hideShimmerAdapter()
+
                     refreshing = false
                 } else {
                     noStories()
                 }
             }
-
         }
 
     }
@@ -138,6 +140,8 @@ import java.io.File
                         val story = Story(K.TYPE_IMAGE, file.absolutePath)
                         adapter.addStory(story)
                     }
+
+                    rv.hideShimmerAdapter()
 
                     refreshing = false
                 } else {

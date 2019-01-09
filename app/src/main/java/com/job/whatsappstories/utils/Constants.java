@@ -9,5 +9,6 @@ public class Constants {
 
     public static final String GBWHATAPP_PACKAGE_NAME = "com.gbwhatsapp";
     public static final String WHATAPP_PACKAGE_NAME = "com.whatsapp";
+    public static final String WHATAPP_BUSINESS_PACKAGE_NAME = "com.whatsapp.w4b";
 
 }

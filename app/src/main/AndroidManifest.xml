@@ -21,6 +21,11 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3733291416843196~1132657073"/>
 
+        <!--  Added crashlytic key -->
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="c7ec6ad6fd423dc47de6c3143c4205bcea46e55e" />
+
         <!--
              Set custom default icon. This is used when no icon is set for incoming notification messages.
              See README(https://goo.gl/l4GJaQ) for more.

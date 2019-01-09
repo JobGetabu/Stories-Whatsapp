@@ -8,4 +8,8 @@
     <color name="light_background">#f2f2f2</color>
     <color name="secondaryText">#D9757575</color>
     <color name="black">#000000</color>
+
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+    <color name="demo_dark_transparent">#24000000</color>
 </resources>

@@ -21,4 +21,8 @@
     <string name="saved_empty_txt">Save your favourite image or video and it will show up here</string>
     <string name="video_empty_txt">Video Status of friends you\'ve viewed in Whatsapp will show here</string>
     <string name="image_empty_txt">Image Status of friends you\'ve viewed in Whatsapp will show here</string>
+
+    <string name="share_txt">It now easy to download friends WhatsApp status. Install Stories Downloader for WhatsApp</string>
+    <string name="share_link">https://play.google.com/store/apps/details?id=com.job.whatsappstories</string>
+    <string name="share_link_txt">It now easy to download friends WhatsApp status. Install Stories Downloader for WhatsApp \n https://play.google.com/store/apps/details?id=com.job.whatsappstories</string>
 </resources>

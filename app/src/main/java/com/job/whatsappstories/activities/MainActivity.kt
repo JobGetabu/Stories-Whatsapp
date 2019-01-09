@@ -3,8 +3,11 @@ package com.job.whatsappstories.activities
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.TabLayout
+import android.view.Menu
+import android.view.MenuItem
 import cn.jzvd.JZVideoPlayer
 import com.job.whatsappstories.R
+import com.job.whatsappstories.commoners.AppUtils
 import com.job.whatsappstories.commoners.BaseActivity
 import com.job.whatsappstories.fragments.ImagesFragment
 import com.job.whatsappstories.fragments.SavedFragment
@@ -38,6 +41,23 @@ class MainActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
         setupViewPager()
         setupTabs()
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.home_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        super.onOptionsItemSelected(item)
+        val id = item.itemId
+        when (id) {
+
+            R.id.share_app -> AppUtils.shareApp(this)
+        }//sendToAdvertiseClass();
+
+        return true
+    }
+
 
     private fun setupViewPager() {
         adapter = PagerAdapter(supportFragmentManager, this)

@@ -17,11 +17,11 @@ def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-ext.versionMajor = 1
+ext.versionMajor = 2
 ext.versionMinor = 0
-ext.versionPatch = 5
+ext.versionPatch = 0
 ext.versionClassifier = null
-ext.isSnapshot = false  //only true while in development
+ext.isSnapshot = true  //only true while in development
 ext.minimumSdkVersion = 17
 
 
@@ -31,10 +31,11 @@ android {
         applicationId "com.job.whatsappstories"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode generateVersionCode() // 170010500
-        versionName generateVersionName() // 1.0.0
+        versionCode generateVersionCode() // 170200000
+        versionName generateVersionName() // 2.0.0
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
 
 
@@ -115,8 +116,11 @@ dependencies {
     // Video
     implementation 'cn.jzvd:jiaozivideoplayer:6.2.12'
 
-    // Crash
-    implementation 'cat.ereza:customactivityoncrash:2.2.0'
+    // shimmer
+    implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
+
+    //sliding root nav
+    implementation 'com.yarolegovich:sliding-root-nav:1.1.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Environment
 import android.os.StrictMode
 import android.support.v4.content.ContextCompat
+import com.job.whatsappstories.R
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.IIcon
 import org.jetbrains.anko.toast
@@ -147,6 +148,14 @@ object AppUtils {
         val intent = Intent(Intent.ACTION_SEND, Uri.parse(path))
         intent.setDataAndType(Uri.parse(path), "video/*")
         intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path))
+        context.startActivity(Intent.createChooser(intent, "Share via..."))
+    }
+
+    fun shareApp(context: Context) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.setType("text/plain")
+        intent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.share_txt))
+        intent.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.share_link_txt))
         context.startActivity(Intent.createChooser(intent, "Share via..."))
     }
 

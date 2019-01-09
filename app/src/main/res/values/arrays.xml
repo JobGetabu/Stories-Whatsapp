@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="ld_activityScreenTitles">
+        <item>Status</item>
+        <item>Business </item>
+        <item>0</item>
+        <item>Rate</item>
+        <item>Remove ads</item>
+
+    </string-array>
+
+    <array name="ld_activityScreenIcons">
+        <item>@drawable/ic_tiles</item>
+        <item>@drawable/ic_whatsapp</item>
+        <item>0</item>
+        <item>@drawable/ic_like</item>
+        <item>@drawable/ic_buy</item>
+    </array>
+
+</resources>

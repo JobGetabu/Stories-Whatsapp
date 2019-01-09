@@ -1,6 +1,8 @@
 package com.job.whatsappstories.fragments
 
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.GridLayoutManager
@@ -20,6 +22,8 @@ import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.RecyclerFormatter
 import com.job.whatsappstories.utils.hideView
 import com.job.whatsappstories.utils.showView
+import com.job.whatsappstories.utils.toast
+import com.job.whatsappstories.viewmodel.WhatsModel
 import kotlinx.android.synthetic.main.fragment_saved.*
 import kotlinx.android.synthetic.main.saved_empty.*
 import org.jetbrains.anko.doAsync
@@ -39,7 +43,20 @@ class SavedFragment : BaseFragment(), StoryCallback {
         super.onViewCreated(view, savedInstanceState)
 
         initViews()
+
+        val model = activity?.run {
+            ViewModelProviders.of(this).get(WhatsModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
+        fragObserver(model)
         loadStories()
+    }
+
+    private fun fragObserver(model: WhatsModel) {
+
+        model.getCurrentFile().observe(this, Observer {
+            context!!.toast("Images -> Changed to $it")
+        })
     }
 
     private fun initViews() {

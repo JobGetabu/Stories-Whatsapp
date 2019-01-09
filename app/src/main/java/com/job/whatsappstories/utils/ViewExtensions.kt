@@ -16,10 +16,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.github.chrisbanes.photoview.PhotoView
 import com.makeramen.roundedimageview.RoundedImageView
@@ -27,6 +24,12 @@ import com.makeramen.roundedimageview.RoundedImageView
 inline fun <reified T : ViewDataBinding> ViewGroup.inflate(@LayoutRes layoutRes: Int): T {
     return DataBindingUtil.inflate(LayoutInflater.from(context), layoutRes, this, false)
 }
+
+inline fun Context.toast(message: String, duration: Int = Toast.LENGTH_SHORT): Toast = Toast
+        .makeText(this, message, duration)
+        .apply {
+            show()
+        }
 
 fun ImageView.loadUrl(url: Int) {
     Glide.with(context)
@@ -91,12 +94,12 @@ inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> Fragmen
     beginTransaction().func().commit()
 }
 
-fun AppCompatActivity.addFragment(fragment: Fragment, frameId: Int){
+fun AppCompatActivity.addFragment(fragment: Fragment, frameId: Int) {
     supportFragmentManager.inTransaction { add(frameId, fragment) }
 }
 
 fun AppCompatActivity.replaceFragment(fragment: Fragment, frameId: Int) {
-    supportFragmentManager.inTransaction{ replace(frameId, fragment).addToBackStack(fragment.tag) }
+    supportFragmentManager.inTransaction { replace(frameId, fragment).addToBackStack(fragment.tag) }
 }
 
 class SemiSquareLayout : RelativeLayout {

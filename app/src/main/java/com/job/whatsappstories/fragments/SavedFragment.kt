@@ -50,6 +50,7 @@ class SavedFragment : BaseFragment(), StoryCallback {
         (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
 
         adapter = StoriesAdapter(this, activity!!)
+        rv.showShimmerAdapter()
         rv.adapter = adapter
 
     }
@@ -83,6 +84,8 @@ class SavedFragment : BaseFragment(), StoryCallback {
 
                         adapter.addStory(story)
                     }
+
+                    rv.hideShimmerAdapter()
 
                 } else {
                     noStories()

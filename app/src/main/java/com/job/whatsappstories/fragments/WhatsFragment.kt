@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.BaseFragment
 import com.job.whatsappstories.utils.PagerAdapter
-import com.job.whatsappstories.utils.toast
 import com.job.whatsappstories.viewmodel.WhatsModel
 import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
@@ -52,13 +51,13 @@ class WhatsFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             ViewModelProviders.of(this).get(WhatsModel::class.java)
         } ?: throw Exception("Invalid Activity")
         fragObserver(model)
-
     }
 
     private fun fragObserver(model: WhatsModel) {
 
-        model.getCurrentFile().observe(this, Observer {
-            context!!.toast("Whats -> Changed to $it")
+        model.getRefresh().observe(this, Observer {
+
+            if(it!!) adapter.notifyDataSetChanged()
         })
     }
 

@@ -28,10 +28,11 @@ import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.io.File
 
- class ImagesFragment : BaseFragment(), StoryCallback {
+class ImagesFragment : BaseFragment(), StoryCallback {
     private lateinit var adapter: StoriesAdapter
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var sharedPrefsEditor: SharedPreferences.Editor
+    private lateinit var model: WhatsModel
 
     private lateinit var mInterstitialAd: InterstitialAd
 
@@ -52,15 +53,15 @@ import java.io.File
             return
         }
 
-        val model = activity?.run {
+        model = activity?.run {
             ViewModelProviders.of(this).get(WhatsModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
         fragObserver(model)
 
-        if(isPackageInstalled(WHATAPP_PACKAGE_NAME,activity!!.packageManager)){
+        if (isPackageInstalled(WHATAPP_PACKAGE_NAME, activity!!.packageManager)) {
             loadStories()
-        }else{
+        } else {
             loadStoriesGB()
         }
 
@@ -70,17 +71,17 @@ import java.io.File
         sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE).edit()
 
         mInterstitialAd = InterstitialAd(context)
-        initLoadAdUnit(mInterstitialAd,activity!!)
+        initLoadAdUnit(mInterstitialAd, activity!!)
         adBizListner(mInterstitialAd)
 
     }
 
-     private fun fragObserver(model: WhatsModel) {
+    private fun fragObserver(model: WhatsModel) {
 
-         model.getCurrentFile().observe(this, Observer {
-             context!!.toast("Images -> Changed to $it")
-         })
-     }
+        model.getCurrentFile().observe(this, Observer {
+            context!!.toast("Images -> Changed to $it")
+        })
+    }
 
     private fun initViews() {
         rv.setHasFixedSize(true)
@@ -177,10 +178,10 @@ import java.io.File
     }
 
     override fun onStoryClicked(v: View, story: Story) {
-        val overview = StoryOverview(activity!!, story, activity!!)
+        val overview = StoryOverview(activity!!, story, model)
         overview.show()
 
-        adBizLogicImg(mInterstitialAd,story, sharedPrefsEditor, sharedPrefs)
+        adBizLogicImg(mInterstitialAd, story, sharedPrefsEditor, sharedPrefs)
     }
 
 

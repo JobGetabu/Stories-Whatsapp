@@ -30,7 +30,6 @@ import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import kotlinx.android.synthetic.main.home_main.*
 import kotlinx.android.synthetic.main.menu_left_drawer.*
 import org.jetbrains.anko.toast
-import timber.log.Timber
 import java.util.*
 
 class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
@@ -136,11 +135,6 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
 
             Handler().postDelayed({ doubleBackToExit = false }, 1500)
         }
-    }
-
-    fun refreshPages() {
-        adapter.notifyDataSetChanged()
-        Timber.d("Refresh works :)")
     }
 
     override fun onItemSelected(position: Int) {

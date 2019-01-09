@@ -21,6 +21,8 @@ import timber.log.Timber
 
 fun multipleOfTwo(num: Int) = num % 2 == 0
 
+fun multipleOfThree(num: Int) = num % 3 == 0
+
 fun multipleOfFive(num: Int) = num % 5 == 0
 
 fun multipleOfSeven(num: Int) = num % 7 == 0
@@ -80,14 +82,14 @@ fun adBizLogicImg(mInterstitialAd: InterstitialAd, story: Story,
         sharedPrefsEditor.putInt(Constants.IMAGE_SAVE_CLICKS, resultImg)
 
         Timber.tag("AdUtil").d("imgClickCount = ${imgClickCount} story.type = ${story.type}")
-        if (multipleOfFive(resultImg)) displayImgAd(mInterstitialAd)
+        if (multipleOfTwo(resultImg)) displayImgAd(mInterstitialAd)
 
     } else {
         val resultVid: Int = vidClickCount + 1
         sharedPrefsEditor.putInt(Constants.VIDEO_SAVE_CLICKS, resultVid)
 
         Timber.tag("AdUtil").d("vidClickCount = $vidClickCount   story.type = ${story.type}")
-        if (multipleOfFive(resultVid)) displayImgAd(mInterstitialAd)
+        if (multipleOfTwo(resultVid)) displayImgAd(mInterstitialAd)
     }
     sharedPrefsEditor.apply()
 }
@@ -102,7 +104,7 @@ fun adBizLogicVideo(mRewardedVideoAd: RewardedVideoAd, story: Story,
         sharedPrefsEditor.putInt(Constants.VIDEO_SAVE_CLICKS, resultVid)
 
         Timber.tag("AdUtil").d("vidClickCount = $vidClickCount   story.type = ${story.type}")
-        if (multipleOfSeven(resultVid)) displayVideoAd(mRewardedVideoAd)
+        if (multipleOfThree(resultVid)) displayVideoAd(mRewardedVideoAd)
 
     }
     sharedPrefsEditor.apply()

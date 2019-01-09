@@ -69,6 +69,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
 
         adapter = StoriesAdapter(this, activity!!)
+        rv.showShimmerAdapter()
         rv.adapter = adapter
 
     }
@@ -95,6 +96,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
                         val story = Story(K.TYPE_VIDEO, file.absolutePath)
                         adapter.addStory(story)
                     }
+                    rv.hideShimmerAdapter()
 
                 } else {
                     noStories()
@@ -127,6 +129,8 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
                         val story = Story(K.TYPE_VIDEO, file.absolutePath)
                         adapter.addStory(story)
                     }
+
+                    rv.hideShimmerAdapter()
 
                 } else {
                     noStories()

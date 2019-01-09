@@ -1,5 +1,6 @@
 package com.job.whatsappstories.activities
 
+import android.arch.lifecycle.ViewModelProviders
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
@@ -16,12 +17,14 @@ import com.google.android.gms.ads.InterstitialAd
 import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.AppUtils
 import com.job.whatsappstories.commoners.BaseActivity
+import com.job.whatsappstories.commoners.K
 import com.job.whatsappstories.fragments.WhatsFragment
 import com.job.whatsappstories.menu.DrawerAdapter
 import com.job.whatsappstories.menu.DrawerItem
 import com.job.whatsappstories.menu.SimpleItem
 import com.job.whatsappstories.menu.SpaceItem
 import com.job.whatsappstories.utils.*
+import com.job.whatsappstories.viewmodel.WhatsModel
 import com.yarolegovich.slidingrootnav.SlidingRootNav
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import kotlinx.android.synthetic.main.home_main.*
@@ -37,6 +40,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
     private lateinit var slidingRootNav: SlidingRootNav
     private lateinit var screenTitles: Array<String>
     private lateinit var screenIcons: Array<Drawable?>
+    private lateinit var model: WhatsModel
 
 
     companion object {
@@ -44,13 +48,16 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         private const val BUSINESS_STATUS = 1
         private const val RATE = 3
         private const val REMOVE_ADS = 4
+        private const val REFERRAL = 5
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_main)
-
         setSupportActionBar(toolbar)
+
+        model = ViewModelProviders.of(this).get(WhatsModel::class.java)
+
         supportActionBar?.title = getString(R.string.app_name)
         mInterstitialAd = InterstitialAd(this)
         initLoadAdUnit(mInterstitialAd, this)
@@ -82,7 +89,8 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
                 createItemFor(BUSINESS_STATUS),
                 SpaceItem(24),
                 createItemFor(RATE),
-                createItemFor(REMOVE_ADS)))
+                createItemFor(REMOVE_ADS),
+                createItemFor(REFERRAL)))
 
         adapter.setListener(this)
 
@@ -140,9 +148,20 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         slidingRootNav.closeMenu()
 
         when (position) {
-            STATUS -> showFragment(WhatsFragment.createFor(screenTitles[position]))
-            BUSINESS_STATUS -> toast("WA Business selected")
+            STATUS -> {
+                model.setCurrentFile(K.WHATSAPP_STORIES)
+                showFragment(WhatsFragment.createFor(screenTitles[position]))
+            }
+            BUSINESS_STATUS -> {
+                model.setCurrentFile(K.WHATSAPP_BUSINESS_STORIES)
+                if (isPackageInstalled(Constants.WHATAPP_BUSINESS_PACKAGE_NAME, packageManager)) {
+
+                } else {
+                    toast(getString(R.string.WA_Biz_not_installed), Toast.LENGTH_LONG)
+                }
+            }
             REMOVE_ADS -> toast("Perform purchase")
+            REFERRAL -> toast("Earn with referrals")
             RATE -> {
                 toast("Love this app give us a 5 star rating", Toast.LENGTH_LONG)
                 AppUtils.rateApp(this)

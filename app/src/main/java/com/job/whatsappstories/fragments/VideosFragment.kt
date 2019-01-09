@@ -1,6 +1,8 @@
 package com.job.whatsappstories.fragments
 
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -21,6 +23,7 @@ import com.job.whatsappstories.commoners.K
 import com.job.whatsappstories.commoners.StoryOverview
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.*
+import com.job.whatsappstories.viewmodel.WhatsModel
 import kotlinx.android.synthetic.main.fragment_videos.*
 import kotlinx.android.synthetic.main.video_empty.*
 import org.jetbrains.anko.doAsync
@@ -46,6 +49,12 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
         initViews()
 
+        val model = activity?.run {
+            ViewModelProviders.of(this).get(WhatsModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
+        fragObserver(model)
+
         if(isPackageInstalled(Constants.WHATAPP_PACKAGE_NAME,activity!!.packageManager)){
             loadStories()
         }else{
@@ -59,6 +68,13 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         mRewardedVideoAd.rewardedVideoAdListener = this
 
         initLoadVideoAdUnit(mRewardedVideoAd,activity!!)
+    }
+
+    private fun fragObserver(model: WhatsModel) {
+
+        model.getCurrentFile().observe(this, Observer {
+            context!!.toast("Videos -> Changed to $it")
+        })
     }
 
     private fun initViews() {

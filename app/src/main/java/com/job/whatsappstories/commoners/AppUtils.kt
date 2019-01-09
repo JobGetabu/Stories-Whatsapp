@@ -159,4 +159,19 @@ object AppUtils {
         context.startActivity(Intent.createChooser(intent, "Share via..."))
     }
 
+    fun rateApp(context: Context){
+
+        try {
+            val playstoreuri1: Uri = Uri.parse("market://details?id=" + "com.job.whatsappstories")
+
+            val playstoreIntent1 = Intent(Intent.ACTION_VIEW, playstoreuri1)
+            context.startActivity(playstoreIntent1)
+            //it genrate exception when devices do not have playstore
+        }catch (exp:Exception){
+            val playstoreuri2: Uri = Uri.parse("http://play.google.com/store/apps/details?id=" + "com.job.whatsappstories")
+            val playstoreIntent2 = Intent(Intent.ACTION_VIEW, playstoreuri2)
+            context.startActivity(playstoreIntent2)
+        }
+    }
+
 }

@@ -33,6 +33,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var sharedPrefsEditor: SharedPreferences.Editor
     private lateinit var model: WhatsModel
+    private lateinit var fileName: String
 
     private lateinit var mInterstitialAd: InterstitialAd
 
@@ -57,12 +58,13 @@ class ImagesFragment : BaseFragment(), StoryCallback {
             ViewModelProviders.of(this).get(WhatsModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
+        fileName =  model.getCurrentFile().toString()
         fragObserver(model)
 
         if (isPackageInstalled(WHATAPP_PACKAGE_NAME, activity!!.packageManager)) {
-            loadStories()
+            loadStories(fileName)
         } else {
-            loadStoriesGB()
+            loadStoriesGB(fileName)
         }
 
 
@@ -79,7 +81,13 @@ class ImagesFragment : BaseFragment(), StoryCallback {
     private fun fragObserver(model: WhatsModel) {
 
         model.getCurrentFile().observe(this, Observer {
-            context!!.toast("Images -> Changed to $it")
+            fileName = it!!
+
+            if(isPackageInstalled(Constants.WHATAPP_PACKAGE_NAME,activity!!.packageManager)){
+                loadStories(fileName)
+            }else{
+                loadStoriesGB(fileName)
+            }
         })
     }
 
@@ -96,13 +104,13 @@ class ImagesFragment : BaseFragment(), StoryCallback {
 
     }
 
-    private fun loadStories() {
+    private fun loadStories(fileName: String) {
         if (!storagePermissionGranted()) {
             requestStoragePermission()
             return
         }
 
-        val dir = File(K.WHATSAPP_STORIES)
+        val dir = File(fileName)
 
         doAsync {
             val files = dir.listFiles { _, s ->
@@ -132,13 +140,13 @@ class ImagesFragment : BaseFragment(), StoryCallback {
 
     }
 
-    private fun loadStoriesGB() {
+    private fun loadStoriesGB(fileName: String) {
         if (!storagePermissionGranted()) {
             requestStoragePermission()
             return
         }
 
-        val dir = File(K.GBWHATSAPP_STORIES)
+        val dir = File(fileName)
 
         doAsync {
             val files = dir.listFiles { _, s ->

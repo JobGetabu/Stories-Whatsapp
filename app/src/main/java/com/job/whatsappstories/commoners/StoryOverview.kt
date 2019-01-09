@@ -25,12 +25,13 @@ class StoryOverview : Dialog, View.OnClickListener {
     private var story: Story
     private var c: Context
     private var model: WhatsModel
+    private var isFromSaved: String
 
-    constructor(context: Context, story: Story, model: WhatsModel): super(context) {
+    constructor(context: Context, story: Story, model: WhatsModel, isFromSaved: String= "False"): super(context) {
         this.c = context
         this.story = story
         this.model = model
-
+        this.isFromSaved = isFromSaved
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +42,8 @@ class StoryOverview : Dialog, View.OnClickListener {
         view.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_eye, R.color.secondaryText, 15))
         share.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_share, R.color.secondaryText, 15))
         save.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_android_download, R.color.secondaryText, 15))
+
+        if (isFromSaved.equals("True")) save.setText("Delete")
 
         view.setOnClickListener(this)
         share.setOnClickListener(this)
@@ -102,13 +105,20 @@ class StoryOverview : Dialog, View.OnClickListener {
                 when(story.type) {
                     K.TYPE_IMAGE -> {
                         val image = BitmapFactory.decodeFile(story.path,BitmapFactory.Options())
-                        AppUtils.saveImage(c,image)
+
+                        if (isFromSaved.equals("True"))  AppUtils.deleteImageFile(c,story.path!!)
+                        else  AppUtils.saveImage(c,image)
+
                         model.setRefresh(true)
+
                     }
 
                     K.TYPE_VIDEO -> {
-                        AppUtils.saveVideoFile(c, story.path!!)
+
+                        if (isFromSaved.equals("True"))  AppUtils.deleteVideoFile(c,story.path!!)
+                        else AppUtils.saveVideoFile(c, story.path!!)
                         model.setRefresh(true)
+
                     }
                 }
             }

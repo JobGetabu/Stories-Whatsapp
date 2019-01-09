@@ -111,8 +111,32 @@ object AppUtils {
             Timber.tag("saveVid").e(e)
             context.toast("Error saving video")
         }
+    }
 
+    fun deleteVideoFile(context: Context, filePath: String) {
+        val currentFile = File(filePath)
 
+        try {
+            currentFile.delete()
+
+            context.toast("Video deleted")
+        } catch (e: Exception) {
+            Timber.tag("delVid").e(e)
+            context.toast("Error deleting video")
+        }
+    }
+
+    fun deleteImageFile(context: Context, filePath: String) {
+        val currentFile = File(filePath)
+
+        try {
+            currentFile.delete()
+
+            context.toast("Image deleted")
+        } catch (e: Exception) {
+            Timber.tag("delVid").e(e)
+            context.toast("Error deleting image")
+        }
     }
 
     fun shareImage(context: Context, bitmap: Bitmap) {

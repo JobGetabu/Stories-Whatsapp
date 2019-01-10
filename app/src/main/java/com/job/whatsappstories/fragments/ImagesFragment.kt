@@ -20,7 +20,6 @@ import com.job.whatsappstories.commoners.K
 import com.job.whatsappstories.commoners.StoryOverview
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.*
-import com.job.whatsappstories.utils.Constants.WHATAPP_PACKAGE_NAME
 import com.job.whatsappstories.viewmodel.WhatsModel
 import kotlinx.android.synthetic.main.fragment_images.*
 import kotlinx.android.synthetic.main.image_empty.*
@@ -58,14 +57,8 @@ class ImagesFragment : BaseFragment(), StoryCallback {
             ViewModelProviders.of(this).get(WhatsModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
-        fileName =  model.getCurrentFile().toString()
-        fragObserver(model)
 
-        if (isPackageInstalled(WHATAPP_PACKAGE_NAME, activity!!.packageManager)) {
-            loadStories(fileName)
-        } else {
-            loadStoriesGB(fileName)
-        }
+        fragObserver(model)
 
 
 
@@ -83,11 +76,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         model.getCurrentFile().observe(this, Observer {
             fileName = it!!
 
-            if(isPackageInstalled(Constants.WHATAPP_PACKAGE_NAME,activity!!.packageManager)){
-                loadStories(fileName)
-            }else{
-                loadStoriesGB(fileName)
-            }
+            loadStories(fileName)
         })
     }
 
@@ -99,8 +88,8 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
 
         adapter = StoriesAdapter(this, activity!!)
-        rv.adapter = adapter
-        rv.showShimmerAdapter()
+        rv?.adapter = adapter
+        rv?.showShimmerAdapter()
 
     }
 
@@ -129,7 +118,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
                         adapter.addStory(story)
                     }
 
-                    rv.hideShimmerAdapter()
+                    rv?.hideShimmerAdapter()
 
                     refreshing = false
                 } else {
@@ -165,7 +154,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
                         adapter.addStory(story)
                     }
 
-                    rv.hideShimmerAdapter()
+                    rv?.hideShimmerAdapter()
 
                     refreshing = false
                 } else {

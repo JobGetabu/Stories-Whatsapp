@@ -143,12 +143,21 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
 
         when (position) {
             STATUS -> {
-                model.setCurrentFile(K.WHATSAPP_STORIES)
+
+                if(isPackageInstalled(Constants.WHATAPP_PACKAGE_NAME,packageManager)){
+
+                    model.setCurrentFile(K.WHATSAPP_STORIES)
+                }else{
+
+                    model.setCurrentFile(K.GBWHATSAPP_STORIES)
+                }
+
                 showFragment(WhatsFragment.createFor(screenTitles[position]))
             }
             BUSINESS_STATUS -> {
                 model.setCurrentFile(K.WHATSAPP_BUSINESS_STORIES)
                 if (isPackageInstalled(Constants.WHATAPP_BUSINESS_PACKAGE_NAME, packageManager)) {
+                    model.setCurrentFile(K.WHATSAPP_BUSINESS_STORIES)
 
                 } else {
                     toast(getString(R.string.WA_Biz_not_installed), Toast.LENGTH_LONG)

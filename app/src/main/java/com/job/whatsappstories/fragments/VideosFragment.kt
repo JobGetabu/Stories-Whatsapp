@@ -55,14 +55,8 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
             ViewModelProviders.of(this).get(WhatsModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
-        fileName =  model.getCurrentFile().toString()
-        fragObserver(model)
 
-        if(isPackageInstalled(Constants.WHATAPP_PACKAGE_NAME,activity!!.packageManager)){
-            loadStories(fileName)
-        }else{
-            loadStoriesGB(fileName)
-        }
+        fragObserver(model)
 
         sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, Context.MODE_PRIVATE)
         sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, Context.MODE_PRIVATE).edit()
@@ -70,7 +64,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(activity)
         mRewardedVideoAd.rewardedVideoAdListener = this
 
-        initLoadVideoAdUnit(mRewardedVideoAd,activity!!)
+        initLoadVideoAdUnit(mRewardedVideoAd, activity!!)
     }
 
     private fun fragObserver(model: WhatsModel) {
@@ -78,11 +72,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         model.getCurrentFile().observe(this, Observer {
             fileName = it!!
 
-            if(isPackageInstalled(Constants.WHATAPP_PACKAGE_NAME,activity!!.packageManager)){
-                loadStories(fileName)
-            }else{
-                loadStoriesGB(fileName)
-            }
+            loadStories(fileName)
         })
     }
 
@@ -94,7 +84,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
 
         adapter = StoriesAdapter(this, activity!!)
-        rv.showShimmerAdapter()
+        rv?.showShimmerAdapter()
         rv.adapter = adapter
 
     }
@@ -109,7 +99,8 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
         doAsync {
             val files = dir.listFiles { _, s ->
-                s.endsWith(".mp4") || s.endsWith(".gif") }
+                s.endsWith(".mp4") || s.endsWith(".gif")
+            }
 
             uiThread {
 
@@ -121,7 +112,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
                         val story = Story(K.TYPE_VIDEO, file.absolutePath)
                         adapter.addStory(story)
                     }
-                    rv.hideShimmerAdapter()
+                    rv?.hideShimmerAdapter()
 
                 } else {
                     noStories()
@@ -142,7 +133,8 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
         doAsync {
             val files = dir.listFiles { _, s ->
-                s.endsWith(".mp4") || s.endsWith(".gif") }
+                s.endsWith(".mp4") || s.endsWith(".gif")
+            }
 
             uiThread {
 
@@ -180,7 +172,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         val overview = StoryOverview(activity!!, story, model)
         overview.show()
 
-        adBizLogicVideo(mRewardedVideoAd,story, sharedPrefsEditor,sharedPrefs)
+        adBizLogicVideo(mRewardedVideoAd, story, sharedPrefsEditor, sharedPrefs)
 
     }
 
@@ -197,7 +189,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
     override fun onRewardedVideoAdClosed() {
         Timber.tag("AdUtil").d("onRewardedVideoAdClosed")
         //good place to reload
-        initLoadVideoAdUnit(mRewardedVideoAd,activity!!)
+        initLoadVideoAdUnit(mRewardedVideoAd, activity!!)
     }
 
     override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {
@@ -220,7 +212,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
     override fun onRewardedVideoCompleted() {
         Timber.tag("AdUtil").d("onRewardedVideoCompleted")
         //good place to reload
-        initLoadVideoAdUnit(mRewardedVideoAd,activity!!)
+        initLoadVideoAdUnit(mRewardedVideoAd, activity!!)
     }
 
 

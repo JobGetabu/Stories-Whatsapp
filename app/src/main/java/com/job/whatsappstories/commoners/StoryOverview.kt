@@ -27,7 +27,7 @@ class StoryOverview : Dialog, View.OnClickListener {
     private var model: WhatsModel
     private var isFromSaved: String
 
-    constructor(context: Context, story: Story, model: WhatsModel, isFromSaved: String= "False"): super(context) {
+    constructor(context: Context, story: Story, model: WhatsModel, isFromSaved: String = "False") : super(context) {
         this.c = context
         this.story = story
         this.model = model
@@ -41,22 +41,24 @@ class StoryOverview : Dialog, View.OnClickListener {
 
         view.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_eye, R.color.secondaryText, 15))
         share.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_share, R.color.secondaryText, 15))
-        save.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_android_download, R.color.secondaryText, 15))
 
-        if (isFromSaved.equals("True")) save.setText("Delete")
+        if (isFromSaved.equals("TRUE")) {
+            save.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_android_delete, R.color.secondaryText, 15))
+            save.setText("Delete")
+
+        } else save.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_android_download, R.color.secondaryText, 15))
 
         view.setOnClickListener(this)
         share.setOnClickListener(this)
         save.setOnClickListener(this)
 
-        when(story.type) {
+        when (story.type) {
             K.TYPE_IMAGE -> loadImageStory()
 
             K.TYPE_VIDEO -> loadVideoStory()
         }
 
     }
-
 
 
     private fun loadImageStory() {
@@ -71,9 +73,9 @@ class StoryOverview : Dialog, View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id) {
+        when (v?.id) {
             R.id.view -> {
-                when(story.type) {
+                when (story.type) {
                     K.TYPE_IMAGE -> {
                         val i = Intent(c, ImageActivity::class.java)
                         i.putExtra(K.STORY, story)
@@ -89,10 +91,10 @@ class StoryOverview : Dialog, View.OnClickListener {
             }
 
             R.id.share -> {
-                when(story.type) {
+                when (story.type) {
                     K.TYPE_IMAGE -> {
-                        val image = BitmapFactory.decodeFile(story.path,BitmapFactory.Options())
-                        AppUtils.shareImage(c,image)
+                        val image = BitmapFactory.decodeFile(story.path, BitmapFactory.Options())
+                        AppUtils.shareImage(c, image)
                     }
 
                     K.TYPE_VIDEO -> {
@@ -102,12 +104,16 @@ class StoryOverview : Dialog, View.OnClickListener {
             }
 
             R.id.save -> {
-                when(story.type) {
+                when (story.type) {
                     K.TYPE_IMAGE -> {
-                        val image = BitmapFactory.decodeFile(story.path,BitmapFactory.Options())
+                        val image = BitmapFactory.decodeFile(story.path, BitmapFactory.Options())
 
-                        if (isFromSaved.equals("True"))  AppUtils.deleteImageFile(c,story.path!!)
-                        else  AppUtils.saveImage(c,image)
+                        if (isFromSaved.equals("TRUE")){
+
+                            AppUtils.deleteImageFile(c, story.path!!)
+                            dismiss()
+                        }
+                        else AppUtils.saveImage(c, image)
 
                         model.setRefresh(true)
 
@@ -115,8 +121,11 @@ class StoryOverview : Dialog, View.OnClickListener {
 
                     K.TYPE_VIDEO -> {
 
-                        if (isFromSaved.equals("True"))  AppUtils.deleteVideoFile(c,story.path!!)
-                        else AppUtils.saveVideoFile(c, story.path!!)
+                        if (isFromSaved.equals("TRUE")) {
+
+                            AppUtils.deleteVideoFile(c, story.path!!)
+                            dismiss()
+                        } else AppUtils.saveVideoFile(c, story.path!!)
                         model.setRefresh(true)
 
                     }

@@ -2,7 +2,6 @@ package com.job.whatsappstories.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.job.whatsappstories.commoners.K
 
 /**
  * Created by Job on Thursday : 1/10/2019.
@@ -12,7 +11,8 @@ class WhatsModel: ViewModel() {
     private var refresh: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
-        currentFile.value = K.WHATSAPP_STORIES
+        //currentFile.value = K.WHATSAPP_STORIES
+
     }
 
     fun getCurrentFile() = currentFile

@@ -1,7 +1,6 @@
 package com.job.whatsappstories.fragments
 
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.widget.DefaultItemAnimator
@@ -9,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.job.whatsappstories.R
 import com.job.whatsappstories.adapters.StoriesAdapter
 import com.job.whatsappstories.callbacks.StoryCallback
@@ -22,7 +20,6 @@ import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.RecyclerFormatter
 import com.job.whatsappstories.utils.hideView
 import com.job.whatsappstories.utils.showView
-import com.job.whatsappstories.utils.toast
 import com.job.whatsappstories.viewmodel.WhatsModel
 import kotlinx.android.synthetic.main.fragment_saved.*
 import kotlinx.android.synthetic.main.saved_empty.*
@@ -55,9 +52,6 @@ class SavedFragment : BaseFragment(), StoryCallback {
 
     private fun fragObserver(model: WhatsModel) {
 
-        model.getCurrentFile().observe(this, Observer {
-            context!!.toast("Images -> Changed to $it")
-        })
     }
 
     private fun initViews() {
@@ -68,7 +62,7 @@ class SavedFragment : BaseFragment(), StoryCallback {
         (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
 
         adapter = StoriesAdapter(this, activity!!)
-        rv.showShimmerAdapter()
+        rv?.showShimmerAdapter()
         rv.adapter = adapter
 
     }
@@ -103,7 +97,7 @@ class SavedFragment : BaseFragment(), StoryCallback {
                         adapter.addStory(story)
                     }
 
-                    rv.hideShimmerAdapter()
+                    rv?.hideShimmerAdapter()
 
                 } else {
                     noStories()
@@ -125,7 +119,7 @@ class SavedFragment : BaseFragment(), StoryCallback {
     }
 
     override fun onStoryClicked(v: View, story: Story) {
-        val overview = StoryOverview(activity!!, story, model)
+        val overview = StoryOverview(activity!!, story, model,"TRUE")
         overview.show()
     }
 

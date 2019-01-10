@@ -134,6 +134,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-ads:17.1.2'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
+    implementation 'com.google.firebase:firebase-dynamic-links:16.1.5'
+    implementation 'com.google.firebase:firebase-inappmessaging-display:17.0.4'
 }
 
 kapt {

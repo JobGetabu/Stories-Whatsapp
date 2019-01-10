@@ -89,7 +89,7 @@ fun adBizLogicImg(mInterstitialAd: InterstitialAd, story: Story,
         val resultImg: Int = imgClickCount + 1
         sharedPrefsEditor.putInt(Constants.IMAGE_SAVE_CLICKS, resultImg)
 
-        Timber.tag("AdUtil").d("imgClickCount = ${imgClickCount} story.type = ${story.type}")
+        Timber.tag("AdUtil").d("imgClickCount = $imgClickCount story.type = ${story.type}")
         if (multipleOfTwo(resultImg)) displayImgAd(mInterstitialAd)
 
     } else {
@@ -146,10 +146,10 @@ fun adBizListner(mInterstitialAd: InterstitialAd) {
 }
 
 fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {
-    try {
-        return packageManager.getApplicationInfo(packageName, 0).enabled
+    return try {
+        packageManager.getApplicationInfo(packageName, 0).enabled
     } catch (e: PackageManager.NameNotFoundException) {
-        return false
+        false
     }
 }
 
@@ -177,7 +177,7 @@ fun createDynamicLink(context: Context) {
                 //var workingLink = "https://whatsappstories.page.link/?invitedby=" + uid
 
                 val intent = Intent(Intent.ACTION_SEND)
-                intent.setType("text/plain")
+                intent.type = "text/plain"
                 intent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.referrer_txt))
                 intent.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.referrer_link_txt, mInvitationUrl))
                 context.startActivity(Intent.createChooser(intent, "Refer using..."))
@@ -230,7 +230,7 @@ private fun createAnonymousAccountWithReferrerInfo(referrerUid: String?) {
                 // will depend on the structure of your app's RTDB.
                 val user = FirebaseAuth.getInstance().currentUser
                 //use firestore
-                val myUser = User(user!!.uid,referrerUid!!)
+                val myUser = User(user!!.uid,referrerUid!!,0)
 
                 FirebaseFirestore.getInstance().collection(USER_COL)
                         .document(referrerUid)

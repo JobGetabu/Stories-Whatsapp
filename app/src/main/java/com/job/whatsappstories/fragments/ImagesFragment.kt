@@ -61,6 +61,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         fragObserver(model)
 
 
+        if (activity?.intent != null) handleInvite(activity!!,activity!!.intent)
 
         sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE)
         sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE).edit()

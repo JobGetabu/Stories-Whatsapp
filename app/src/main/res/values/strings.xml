@@ -26,4 +26,7 @@
     <string name="share_link">https://play.google.com/store/apps/details?id=com.job.whatsappstories</string>
     <string name="share_link_txt">It now easy to download friends WhatsApp status. Install Stories Downloader for WhatsApp \n https://play.google.com/store/apps/details?id=com.job.whatsappstories</string>
     <string name="WA_Biz_not_installed">WhatsApp Business is not installed</string>
+
+    <string name="referrer_txt">It now easy to download friends WhatsApp status. Install Stories Downloader for WhatsApp</string>
+    <string name="referrer_link_txt">It now easy to download friends WhatsApp status. Install Stories Downloader for WhatsApp \n Referred by:  %s</string>
 </resources>

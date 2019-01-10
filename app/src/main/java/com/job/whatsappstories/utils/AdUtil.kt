@@ -1,17 +1,26 @@
 package com.job.whatsappstories.utils
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.Uri
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.reward.RewardedVideoAd
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.dynamiclinks.DynamicLink
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.firestore.FirebaseFirestore
 import com.job.whatsappstories.BuildConfig
 import com.job.whatsappstories.R
 import com.job.whatsappstories.models.Story
+import com.job.whatsappstories.models.User
+import com.job.whatsappstories.utils.Constants.USER_COL
+import org.jetbrains.anko.toast
 import timber.log.Timber
-
 
 
 /**
@@ -70,9 +79,8 @@ fun displayVideoAd(mRewardedVideoAd: RewardedVideoAd) {
 }
 
 
-
 fun adBizLogicImg(mInterstitialAd: InterstitialAd, story: Story,
-               sharedPrefsEditor: SharedPreferences.Editor, sharedPrefs: SharedPreferences) {
+                  sharedPrefsEditor: SharedPreferences.Editor, sharedPrefs: SharedPreferences) {
     val imgClickCount: Int = sharedPrefs.getInt(Constants.IMAGE_SAVE_CLICKS, 0)
     val vidClickCount: Int = sharedPrefs.getInt(Constants.VIDEO_SAVE_CLICKS, 0)
 
@@ -95,7 +103,7 @@ fun adBizLogicImg(mInterstitialAd: InterstitialAd, story: Story,
 }
 
 fun adBizLogicVideo(mRewardedVideoAd: RewardedVideoAd, story: Story,
-                  sharedPrefsEditor: SharedPreferences.Editor, sharedPrefs: SharedPreferences) {
+                    sharedPrefsEditor: SharedPreferences.Editor, sharedPrefs: SharedPreferences) {
 
     val vidClickCount: Int = sharedPrefs.getInt(Constants.VIDEO_SAVE_CLICKS, 0)
 
@@ -143,4 +151,93 @@ fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boo
     } catch (e: PackageManager.NameNotFoundException) {
         return false
     }
+}
+
+fun createDynamicLink(context: Context) {
+
+    val user = FirebaseAuth.getInstance().currentUser
+    if (user == null) {
+        context.toast("Network connection needed")
+        return
+    }
+
+    val uid = user.uid
+    val link = "https://whatsappstories.page.link/get/?invitedby=$uid"
+    FirebaseDynamicLinks.getInstance().createDynamicLink()
+            .setLink(Uri.parse(link))
+            .setDomainUriPrefix("https://whatsappstories.page.link")
+            .setAndroidParameters(
+                    DynamicLink.AndroidParameters.Builder("com.job.whatsappstories")
+                            .setMinimumVersion(170200000)
+                            .build())
+
+            .buildShortDynamicLink()
+            .addOnSuccessListener { shortDynamicLink ->
+                var mInvitationUrl = shortDynamicLink.shortLink
+                //var workingLink = "https://whatsappstories.page.link/?invitedby=" + uid
+
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.setType("text/plain")
+                intent.putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.referrer_txt))
+                intent.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.referrer_link_txt, mInvitationUrl))
+                context.startActivity(Intent.createChooser(intent, "Refer using..."))
+
+            }
+}
+
+fun handleInvite(activity: Activity, intent: Intent){
+    FirebaseDynamicLinks.getInstance()
+            .getDynamicLink(intent)
+            .addOnSuccessListener(activity) { pendingDynamicLinkData ->
+                // Get deep link from result (may be null if no link is found)
+                var deepLink: Uri? = null
+                if (pendingDynamicLinkData != null) {
+                    deepLink = pendingDynamicLinkData.link
+                }
+                //
+                // If the user isn't signed in and the pending Dynamic Link is
+                // an invitation, sign in the user anonymously, and record the
+                // referrer's UID.
+                //
+
+                val user = FirebaseAuth.getInstance().currentUser
+                if (user == null &&
+                        deepLink != null &&
+                        deepLink.getBooleanQueryParameter("invitedby", false)) {
+
+                    val referrerUid = deepLink.getQueryParameter("invitedby")
+                    createAnonymousAccountWithReferrerInfo(referrerUid)
+
+                    activity.toast("invited by $referrerUid")
+                    Timber.d("invited by $referrerUid")
+                }
+
+                //testing referral
+                val referrerUid = deepLink?.getQueryParameter("invitedby")
+                //createAnonymousAccountWithReferrerInfo(referrerUid)
+
+                activity.toast("invited by $referrerUid")
+                Timber.d("invited by $referrerUid")
+
+            }
+}
+
+private fun createAnonymousAccountWithReferrerInfo(referrerUid: String?) {
+    FirebaseAuth.getInstance()
+            .signInAnonymously()
+            .addOnSuccessListener {
+                // Keep track of the referrer in the RTDB. Database calls
+                // will depend on the structure of your app's RTDB.
+                val user = FirebaseAuth.getInstance().currentUser
+                //use firestore
+                val myUser = User(user!!.uid,referrerUid!!)
+
+                FirebaseFirestore.getInstance().collection(USER_COL)
+                        .document(referrerUid)
+                        .set(myUser)
+                        .addOnCompleteListener { task ->
+                            if (task.isComplete)  Timber.d("Account created for $referrerUid")
+                            else  Timber.e(task.exception, "Account creation failure for $referrerUid")
+                        }
+            }
 }

@@ -176,7 +176,10 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
                 }
             }
             REMOVE_ADS -> toast("Perform purchase")
-            REFERRAL -> toast("Earn with referrals")
+            REFERRAL -> {
+                createDynamicLink(this)
+                toast("Earn with referrals")
+            }
             RATE -> {
                 toast("Love this app give us a 5 star rating", Toast.LENGTH_LONG)
                 AppUtils.rateApp(this)
@@ -220,7 +223,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         return ContextCompat.getColor(this, res)
     }
 
-    fun signIn(){
+    private fun signIn(){
         auth.signInAnonymously()
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {

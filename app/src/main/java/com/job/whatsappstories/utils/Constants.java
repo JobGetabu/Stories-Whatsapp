@@ -12,5 +12,6 @@ public class Constants {
     public static final String WHATAPP_BUSINESS_PACKAGE_NAME = "com.whatsapp.w4b";
 
     public static final String USER_UID = "USER_UID";
+    public static final String USER_COL = "Users";
 
 }

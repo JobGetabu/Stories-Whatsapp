@@ -137,6 +137,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-dynamic-links:16.1.5'
     implementation 'com.google.firebase:firebase-inappmessaging-display:17.0.4'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
+    implementation 'com.google.firebase:firebase-firestore:17.1.5'
 }
 
 kapt {

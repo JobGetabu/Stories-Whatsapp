@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import cn.jzvd.JZVideoPlayer
 import com.google.android.gms.ads.InterstitialAd
+import com.google.firebase.auth.FirebaseAuth
 import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.AppUtils
 import com.job.whatsappstories.commoners.BaseActivity
@@ -24,12 +25,14 @@ import com.job.whatsappstories.menu.DrawerItem
 import com.job.whatsappstories.menu.SimpleItem
 import com.job.whatsappstories.menu.SpaceItem
 import com.job.whatsappstories.utils.*
+import com.job.whatsappstories.utils.Constants.USER_UID
 import com.job.whatsappstories.viewmodel.WhatsModel
 import com.yarolegovich.slidingrootnav.SlidingRootNav
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import kotlinx.android.synthetic.main.home_main.*
 import kotlinx.android.synthetic.main.menu_left_drawer.*
 import org.jetbrains.anko.toast
+import timber.log.Timber
 import java.util.*
 
 class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
@@ -40,6 +43,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
     private lateinit var screenTitles: Array<String>
     private lateinit var screenIcons: Array<Drawable?>
     private lateinit var model: WhatsModel
+    private lateinit var auth: FirebaseAuth
 
 
     companion object {
@@ -48,6 +52,11 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         private const val RATE = 3
         private const val REMOVE_ADS = 4
         private const val REFERRAL = 5
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (auth.currentUser == null) signIn()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +72,9 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         adBizListner(mInterstitialAd)
 
         setupSliderDrawer(savedInstanceState)
+
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
 
     }
 
@@ -206,5 +218,25 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
     @ColorInt
     private fun color(@ColorRes res: Int): Int {
         return ContextCompat.getColor(this, res)
+    }
+
+    fun signIn(){
+        auth.signInAnonymously()
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Timber.d("signInAnonymously:success")
+                        val user = auth.currentUser
+                        val userPrefsEditor = PreferenceHelper.customPrefs(this).edit()
+
+                        userPrefsEditor.putString(USER_UID, user?.uid)
+
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Timber.e( task.exception,"signInAnonymously:failure")
+                        Timber.d("Authentication failed.")
+                    }
+
+                }
     }
 }

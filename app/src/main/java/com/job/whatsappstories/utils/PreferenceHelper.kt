@@ -8,7 +8,7 @@ object PreferenceHelper {
 
     fun defaultPrefs(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    fun customPrefs(context: Context, name: String): SharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
+    fun customPrefs(context: Context, name: String = context.applicationContext.packageName): SharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE)
 
     private inline fun SharedPreferences.edit(operation: (SharedPreferences.Editor) -> Unit) {
         val editor = this.edit()

@@ -122,6 +122,9 @@ dependencies {
     //sliding root nav
     implementation 'com.yarolegovich:sliding-root-nav:1.1.0'
 
+    //play billing library
+    implementation 'com.android.billingclient:billing:1.0'
+
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
 

@@ -29,8 +29,7 @@ class Application : MultiDexApplication() {
         //vector enabled for > 19
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
-        if( !BuildConfig.DEBUG){
-            Fabric.with(this,Crashlytics())
-        }
+        if( !BuildConfig.DEBUG)  Fabric.with(this,Crashlytics())
+
     }
 }

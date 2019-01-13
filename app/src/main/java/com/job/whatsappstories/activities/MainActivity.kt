@@ -19,6 +19,7 @@ import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.AppUtils
 import com.job.whatsappstories.commoners.BaseActivity
 import com.job.whatsappstories.commoners.K
+import com.job.whatsappstories.commoners.ReferDialogue
 import com.job.whatsappstories.fragments.WhatsFragment
 import com.job.whatsappstories.menu.DrawerAdapter
 import com.job.whatsappstories.menu.DrawerItem
@@ -177,7 +178,9 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
             }
             REMOVE_ADS -> toast("Perform purchase")
             REFERRAL -> {
-                createDynamicLink(this)
+                val referDialogue = ReferDialogue(this)
+                referDialogue.show()
+
                 toast("Earn with referrals")
             }
             RATE -> {

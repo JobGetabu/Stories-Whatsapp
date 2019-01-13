@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.iid.FirebaseInstanceId
 import com.job.whatsappstories.BuildConfig
 import com.job.whatsappstories.R
 import com.job.whatsappstories.models.Story
@@ -206,18 +207,16 @@ fun handleInvite(activity: Activity, intent: Intent){
                         deepLink.getBooleanQueryParameter("invitedby", false)) {
 
                     val referrerUid = deepLink.getQueryParameter("invitedby")
-                    createAnonymousAccountWithReferrerInfo(referrerUid)
+                    if (referrerUid != null){
 
-                    activity.toast("invited by $referrerUid")
-                    Timber.d("invited by $referrerUid")
+                        createAnonymousAccountWithReferrerInfo(referrerUid)
+
+                        activity.toast("invited by $referrerUid")
+                        Timber.d("invited by $referrerUid")
+
+                    }
                 }
 
-                //testing referral
-                val referrerUid = deepLink?.getQueryParameter("invitedby")
-                //createAnonymousAccountWithReferrerInfo(referrerUid)
-
-                activity.toast("invited by $referrerUid")
-                Timber.d("invited by $referrerUid")
 
             }
 }
@@ -229,8 +228,9 @@ private fun createAnonymousAccountWithReferrerInfo(referrerUid: String?) {
                 // Keep track of the referrer in the RTDB. Database calls
                 // will depend on the structure of your app's RTDB.
                 val user = FirebaseAuth.getInstance().currentUser
+                val token = FirebaseInstanceId.getInstance().instanceId.toString()
                 //use firestore
-                val myUser = User(user!!.uid,referrerUid!!,0)
+                val myUser = User(user!!.uid,referrerUid!!,0,token,false)
 
                 FirebaseFirestore.getInstance().collection(USER_COL)
                         .document(referrerUid)

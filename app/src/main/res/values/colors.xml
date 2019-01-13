@@ -12,4 +12,8 @@
     <color name="textColorPrimary">#212121</color>
     <color name="textColorSecondary">#757575</color>
     <color name="demo_dark_transparent">#24000000</color>
+
+    <color name="greenb">#4D7BF3</color>
+    <color name="greenb2">#039BE5</color>
+    <color name="greenb3">#1CB2D7</color>
 </resources>

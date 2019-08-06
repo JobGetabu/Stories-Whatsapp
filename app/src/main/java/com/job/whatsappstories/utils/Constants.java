@@ -13,5 +13,7 @@ public class Constants {
 
     public static final String USER_UID = "USER_UID";
     public static final String USER_COL = "Users";
+    public static final String IS_PRO_USER = "IS_PRO_USER";
+    public static final String REMOVE_AD_ID = "remove_ad";
 
 }

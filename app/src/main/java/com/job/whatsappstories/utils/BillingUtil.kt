@@ -3,7 +3,8 @@ package com.job.whatsappstories.utils
 import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
+import com.android.billingclient.api.Purchase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
@@ -76,8 +77,11 @@ fun checkUpgrade(activity: Activity){
                         if(user.ispro){
                             userPrefsEditor.putBoolean(IS_PRO_USER, true)
                             userPrefsEditor.apply()
-                            activity.finish()
-                            activity.startActivity(Intent(activity, MainActivity::class.java))
+                            val intent = Intent(activity, MainActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            activity.startActivity(intent)
                         }
                     }
                 }

@@ -1,7 +1,7 @@
 package com.job.whatsappstories.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
 /**
  * Created by Job on Thursday : 1/10/2019.

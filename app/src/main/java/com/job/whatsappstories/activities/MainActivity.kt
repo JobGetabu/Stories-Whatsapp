@@ -1,38 +1,37 @@
 package com.job.whatsappstories.activities
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
-import android.support.annotation.ColorInt
-import android.support.annotation.ColorRes
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import cn.jzvd.JZVideoPlayer
 import com.google.android.gms.ads.InterstitialAd
 import com.google.firebase.auth.FirebaseAuth
 import com.job.whatsappstories.R
-import com.job.whatsappstories.commoners.AppUtils
-import com.job.whatsappstories.commoners.BaseActivity
-import com.job.whatsappstories.commoners.K
-import com.job.whatsappstories.commoners.ReferDialogue
+import com.job.whatsappstories.commoners.*
 import com.job.whatsappstories.fragments.WhatsFragment
 import com.job.whatsappstories.menu.DrawerAdapter
 import com.job.whatsappstories.menu.DrawerItem
 import com.job.whatsappstories.menu.SimpleItem
 import com.job.whatsappstories.menu.SpaceItem
 import com.job.whatsappstories.utils.*
-import com.job.whatsappstories.utils.Constants.USER_UID
+import com.job.whatsappstories.utils.Constants.*
 import com.job.whatsappstories.viewmodel.WhatsModel
 import com.yarolegovich.slidingrootnav.SlidingRootNav
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import kotlinx.android.synthetic.main.home_main.*
 import kotlinx.android.synthetic.main.menu_left_drawer.*
 import org.jetbrains.anko.toast
+import org.solovyev.android.checkout.*
 import timber.log.Timber
 import java.util.*
 
@@ -45,6 +44,9 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
     private lateinit var screenIcons: Array<Drawable?>
     private lateinit var model: WhatsModel
     private lateinit var auth: FirebaseAuth
+    private lateinit var mInventory: Inventory
+
+    private val mCheckout: ActivityCheckout = Checkout.forActivity(this, Application.instance.getBilling())
 
 
     companion object {
@@ -53,6 +55,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         private const val RATE = 3
         private const val REMOVE_ADS = 4
         private const val REFERRAL = 5
+        private const val SKU_REMOVE_ADS = "remove_ad"
     }
 
     override fun onStart() {
@@ -72,11 +75,25 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         initLoadAdUnit(mInterstitialAd, this)
         adBizListner(mInterstitialAd)
 
-        setupSliderDrawer(savedInstanceState)
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
 
+        initCheckout()
+
+        isUserPro(savedInstanceState)
+
+    }
+
+    private fun initCheckout() {
+        mCheckout.start()
+
+        mCheckout.createPurchaseFlow(PurchaseListener())
+
+        mInventory = mCheckout.makeInventory()
+        mInventory.load(Inventory.Request.create()
+                .loadAllPurchases()
+                .loadSkus(ProductTypes.IN_APP, REMOVE_AD_ID), InventoryCallback())
     }
 
     private fun setupSliderDrawer(savedInstanceState: Bundle?) {
@@ -157,10 +174,10 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         when (position) {
             STATUS -> {
 
-                if(isPackageInstalled(Constants.WHATAPP_PACKAGE_NAME,packageManager)){
+                if (isPackageInstalled(Constants.WHATAPP_PACKAGE_NAME, packageManager)) {
 
                     model.setCurrentFile(K.WHATSAPP_STORIES)
-                }else{
+                } else {
 
                     model.setCurrentFile(K.GBWHATSAPP_STORIES)
                 }
@@ -176,7 +193,31 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
                     toast(getString(R.string.WA_Biz_not_installed), Toast.LENGTH_LONG)
                 }
             }
-            REMOVE_ADS -> toast("Perform purchase")
+            REMOVE_ADS -> {
+
+                val userPrefs = Application.instance.getPrefs()
+                val isPro = userPrefs.getBoolean(IS_PRO_USER, false)
+
+                if (!isPro){
+
+                    mCheckout.whenReady(object : Checkout.EmptyListener() {
+                        override fun onReady(requests: BillingRequests) {
+
+                            toast("Perform purchase")
+                            requests.purchase(ProductTypes.IN_APP, REMOVE_AD_ID, null, mCheckout.purchaseFlow)
+                            checkUpgrade(this@MainActivity)
+                        }
+                    })
+                }
+                else {
+                    //is pro do REFERRAL
+                    val referDialogue = ReferDialogue(this)
+                    referDialogue.show()
+
+                    toast("Earn with referrals")
+                }
+
+            }
             REFERRAL -> {
                 val referDialogue = ReferDialogue(this)
                 referDialogue.show()
@@ -226,7 +267,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         return ContextCompat.getColor(this, res)
     }
 
-    private fun signIn(){
+    private fun signIn() {
         auth.signInAnonymously()
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
@@ -234,15 +275,69 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
                         Timber.d("signInAnonymously:success")
                         val user = auth.currentUser
                         val userPrefsEditor = PreferenceHelper.customPrefs(this).edit()
-
                         userPrefsEditor.putString(USER_UID, user?.uid)
+                        userPrefsEditor.apply()
+
+                        createAccount(user!!.uid)
 
                     } else {
                         // If sign in fails, display a message to the user.
-                        Timber.e( task.exception,"signInAnonymously:failure")
+                        Timber.e(task.exception, "signInAnonymously:failure")
                         Timber.d("Authentication failed.")
                     }
 
                 }
+    }
+
+    override fun onDestroy() {
+        mCheckout.stop()
+        super.onDestroy()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        mCheckout.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun isUserPro(savedInstanceState: Bundle?) {
+        val userPrefs = Application.instance.getPrefs()
+        val isPro = userPrefs.getBoolean(IS_PRO_USER, false)
+
+        if (!isPro) setupSliderDrawer(savedInstanceState)
+        else setupSliderDrawerPro(savedInstanceState)
+    }
+
+    private fun setupSliderDrawerPro(savedInstanceState: Bundle?) {
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = getString(R.string.app_name_pro)
+
+
+        slidingRootNav = SlidingRootNavBuilder(this)
+                .withToolbarMenuToggle(toolbar)
+                .withMenuOpened(false)
+                .withContentClickableWhenMenuOpened(false)
+                .withSavedState(savedInstanceState)
+                .withMenuLayout(R.layout.menu_left_drawer)
+                .inject()
+
+
+        screenIcons = loadScreenIconsPro(this)
+        screenTitles = loadScreenTitlesPro(this)
+
+        val adapter = DrawerAdapter(Arrays.asList(
+                createItemFor(STATUS).setChecked(true),
+                createItemFor(BUSINESS_STATUS),
+                SpaceItem(24),
+                createItemFor(RATE),
+                createItemFor(4)))
+
+        adapter.setListener(this)
+
+
+        drawerList.isNestedScrollingEnabled = false
+        drawerList.layoutManager = LinearLayoutManager(this)
+        drawerList.adapter = adapter
+
+        adapter.setSelected(STATUS)
     }
 }

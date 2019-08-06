@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide;
 
 public class BindingAdapter {
 
-    @android.databinding.BindingAdapter({"imagePath"})
+    @androidx.databinding.BindingAdapter({"imagePath"})
     public static void loadImage(ImageView view, String path) {
         Glide.with(view.getContext())
                 .load(path)

@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.job.whatsappstories.BuildConfig
 import com.job.whatsappstories.R
+import com.job.whatsappstories.commoners.Application
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.models.User
 import com.job.whatsappstories.utils.Constants.USER_COL
@@ -66,6 +67,10 @@ fun initLoadVideoAdUnit(mRewardedVideoAd: RewardedVideoAd, activity: Activity) {
 }
 
 fun displayImgAd(mInterstitialAd: InterstitialAd) {
+    val userPrefs = Application.instance.getPrefs()
+    val isPro = userPrefs.getBoolean(Constants.IS_PRO_USER, false)
+    if (isPro) return
+
     if (mInterstitialAd.isLoaded) {
         mInterstitialAd.show()
     } else {
@@ -74,6 +79,10 @@ fun displayImgAd(mInterstitialAd: InterstitialAd) {
 }
 
 fun displayVideoAd(mRewardedVideoAd: RewardedVideoAd) {
+    val userPrefs = Application.instance.getPrefs()
+    val isPro = userPrefs.getBoolean(Constants.IS_PRO_USER, false)
+    if (isPro) return
+
     if (mRewardedVideoAd.isLoaded) {
         mRewardedVideoAd.show()
     }
@@ -228,7 +237,7 @@ private fun createAnonymousAccountWithReferrerInfo(referrerUid: String?) {
                 // Keep track of the referrer in the RTDB. Database calls
                 // will depend on the structure of your app's RTDB.
                 val user = FirebaseAuth.getInstance().currentUser
-                val token = FirebaseInstanceId.getInstance().instanceId.toString()
+                val token = FirebaseInstanceId.getInstance().token.toString()
                 //use firestore
                 val myUser = User(user!!.uid,referrerUid!!,0,token,false)
 

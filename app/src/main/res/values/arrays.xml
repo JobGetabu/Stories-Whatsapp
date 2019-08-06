@@ -8,7 +8,14 @@
         <item>Rate</item>
         <item>Remove ads</item>
         <item>Referral</item>
+    </string-array>
 
+    <string-array name="ld_activityScreenTitles_pro">
+        <item>Status</item>
+        <item>Business </item>
+        <item>0</item>
+        <item>Rate</item>
+        <item>Referral</item>
     </string-array>
 
     <array name="ld_activityScreenIcons">
@@ -17,6 +24,14 @@
         <item>0</item>
         <item>@drawable/ic_like</item>
         <item>@drawable/ic_buy</item>
+        <item>@drawable/ic_money_box2</item>
+    </array>
+
+    <array name="ld_activityScreenIcons_pro">
+        <item>@drawable/ic_tiles</item>
+        <item>@drawable/ic_whatsapp</item>
+        <item>0</item>
+        <item>@drawable/ic_like</item>
         <item>@drawable/ic_money_box2</item>
     </array>
 

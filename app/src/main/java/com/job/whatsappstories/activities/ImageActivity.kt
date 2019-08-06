@@ -1,7 +1,7 @@
 package com.job.whatsappstories.activities
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.K
 import com.job.whatsappstories.models.Story

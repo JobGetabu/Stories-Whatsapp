@@ -9,7 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.StrictMode
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import com.job.whatsappstories.R
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.IIcon

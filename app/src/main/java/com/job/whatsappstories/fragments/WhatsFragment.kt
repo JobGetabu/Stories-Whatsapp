@@ -3,10 +3,10 @@ package com.job.whatsappstories.fragments
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.TabLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.tabs.TabLayout
 import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.BaseFragment
 import com.job.whatsappstories.utils.PagerAdapter

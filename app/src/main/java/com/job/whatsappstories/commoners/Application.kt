@@ -1,15 +1,13 @@
 package com.job.whatsappstories.commoners
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
-import android.support.v7.app.AppCompatDelegate
 import com.crashlytics.android.Crashlytics
 import com.google.android.gms.ads.MobileAds
 import com.job.whatsappstories.BuildConfig
 import com.job.whatsappstories.R
 import com.job.whatsappstories.utils.PreferenceHelper.customPrefs
 import io.fabric.sdk.android.Fabric
-import org.solovyev.android.checkout.Billing
-import org.solovyev.android.checkout.Billing.DefaultConfiguration
 import timber.log.Timber
 
 
@@ -45,15 +43,7 @@ class Application : MultiDexApplication() {
 
     }
 
-    private val mBilling = Billing(this, object: DefaultConfiguration() {
-        override fun getPublicKey(): String {
-            return base64PubKey
-        }
-    })
-
     fun getApp() = instance
-
-    fun getBilling() = mBilling
 
     fun getPrefs() = customPrefs(this)
 }

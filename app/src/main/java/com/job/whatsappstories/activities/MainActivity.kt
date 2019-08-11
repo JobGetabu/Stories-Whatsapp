@@ -1,17 +1,17 @@
 package com.job.whatsappstories.activities
 
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
-import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.jzvd.JZVideoPlayer
 import com.google.android.gms.ads.InterstitialAd
@@ -24,14 +24,14 @@ import com.job.whatsappstories.menu.DrawerItem
 import com.job.whatsappstories.menu.SimpleItem
 import com.job.whatsappstories.menu.SpaceItem
 import com.job.whatsappstories.utils.*
-import com.job.whatsappstories.utils.Constants.*
+import com.job.whatsappstories.utils.Constants.IS_PRO_USER
+import com.job.whatsappstories.utils.Constants.USER_UID
 import com.job.whatsappstories.viewmodel.WhatsModel
 import com.yarolegovich.slidingrootnav.SlidingRootNav
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import kotlinx.android.synthetic.main.home_main.*
 import kotlinx.android.synthetic.main.menu_left_drawer.*
 import org.jetbrains.anko.toast
-import org.solovyev.android.checkout.*
 import timber.log.Timber
 import java.util.*
 
@@ -44,9 +44,6 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
     private lateinit var screenIcons: Array<Drawable?>
     private lateinit var model: WhatsModel
     private lateinit var auth: FirebaseAuth
-    private lateinit var mInventory: Inventory
-
-    private val mCheckout: ActivityCheckout = Checkout.forActivity(this, Application.instance.getBilling())
 
 
     companion object {
@@ -79,21 +76,10 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
 
-        initCheckout()
+
 
         isUserPro(savedInstanceState)
 
-    }
-
-    private fun initCheckout() {
-        mCheckout.start()
-
-        mCheckout.createPurchaseFlow(PurchaseListener())
-
-        mInventory = mCheckout.makeInventory()
-        mInventory.load(Inventory.Request.create()
-                .loadAllPurchases()
-                .loadSkus(ProductTypes.IN_APP, REMOVE_AD_ID), InventoryCallback())
     }
 
     private fun setupSliderDrawer(savedInstanceState: Bundle?) {
@@ -200,14 +186,6 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
 
                 if (!isPro){
 
-                    mCheckout.whenReady(object : Checkout.EmptyListener() {
-                        override fun onReady(requests: BillingRequests) {
-
-                            toast("Perform purchase")
-                            requests.purchase(ProductTypes.IN_APP, REMOVE_AD_ID, null, mCheckout.purchaseFlow)
-                            checkUpgrade(this@MainActivity)
-                        }
-                    })
                 }
                 else {
                     //is pro do REFERRAL
@@ -290,13 +268,12 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
     }
 
     override fun onDestroy() {
-        mCheckout.stop()
         super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        mCheckout.onActivityResult(requestCode, resultCode, data)
+
     }
 
     private fun isUserPro(savedInstanceState: Bundle?) {

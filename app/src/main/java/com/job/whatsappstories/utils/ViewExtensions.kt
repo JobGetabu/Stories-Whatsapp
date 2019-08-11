@@ -6,19 +6,19 @@ import androidx.databinding.ViewDataBinding
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import androidx.annotation.LayoutRes
-import android.support.design.widget.Snackbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.core.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.github.chrisbanes.photoview.PhotoView
+import com.google.android.material.snackbar.Snackbar
 import com.makeramen.roundedimageview.RoundedImageView
 
 inline fun <reified T : ViewDataBinding> ViewGroup.inflate(@LayoutRes layoutRes: Int): T {

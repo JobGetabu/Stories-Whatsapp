@@ -24,7 +24,7 @@
         <item>0</item>
         <item>@drawable/ic_like</item>
         <item>@drawable/ic_buy</item>
-        <item>@drawable/ic_money_box2</item>
+        <item>@drawable/ic_pig</item>
     </array>
 
     <array name="ld_activityScreenIcons_pro">
@@ -32,7 +32,7 @@
         <item>@drawable/ic_whatsapp</item>
         <item>0</item>
         <item>@drawable/ic_like</item>
-        <item>@drawable/ic_money_box2</item>
+        <item>@drawable/ic_pig</item>
     </array>
 
 </resources>

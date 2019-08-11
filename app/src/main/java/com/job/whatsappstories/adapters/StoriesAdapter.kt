@@ -1,8 +1,8 @@
 package com.job.whatsappstories.adapters
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.job.whatsappstories.R
 import com.job.whatsappstories.callbacks.StoryCallback
 import com.job.whatsappstories.commoners.AppUtils.setDrawable

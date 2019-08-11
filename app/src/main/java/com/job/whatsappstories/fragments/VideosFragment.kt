@@ -1,14 +1,14 @@
 package com.job.whatsappstories.fragments
 
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.gms.ads.MobileAds
@@ -104,7 +104,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
             uiThread {
 
-                if (files.isNotEmpty()) {
+                if (files != null && files.isNotEmpty()) {
                     hasStories()
 
 
@@ -138,7 +138,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
             uiThread {
 
-                if (files.isNotEmpty()) {
+                if (files != null && files.isNotEmpty()) {
                     hasStories()
 
 

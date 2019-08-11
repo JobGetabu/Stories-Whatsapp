@@ -109,7 +109,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
 
             uiThread {
 
-                if (files.isNotEmpty()) {
+                if (files != null && files.isNotEmpty()) {
                     hasStories()
 
                     if (refreshing) adapter.clearStories()
@@ -127,7 +127,6 @@ class ImagesFragment : BaseFragment(), StoryCallback {
                 }
             }
         }
-
     }
 
     private fun loadStoriesGB(fileName: String) {

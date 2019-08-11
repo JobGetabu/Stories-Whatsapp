@@ -83,7 +83,7 @@ class SavedFragment : BaseFragment(), StoryCallback {
 
             uiThread {
 
-                if (files.isNotEmpty()) {
+                if (files != null && files.isNotEmpty()) {
                     hasStories()
                     var story = Story()
 

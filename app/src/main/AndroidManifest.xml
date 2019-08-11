@@ -24,24 +24,30 @@
             android:value="ca-app-pub-3733291416843196~1132657073"/>
 
         <!--  Added crashlytic key -->
-        <meta-data
+        <!--<meta-data
             android:name="io.fabric.ApiKey"
-            android:value="bd67bf129c485e4f45930b61a67e4b8b08359675" />
+            android:value="bd67bf129c485e4f45930b61a67e4b8b08359675" />-->
 
-        <!--
-             Set custom default icon. This is used when no icon is set for incoming notification messages.
-             See README(https://goo.gl/l4GJaQ) for more.
-        -->
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
-        <!--
-             Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more.
-        -->
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
+
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="@bool/FIREBASE_CRASH_ENABLED"/>
+
+        <service
+            android:name=".utils.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
         <activity android:name="com.job.whatsappstories.activities.MainActivity">
             <intent-filter>
@@ -68,7 +74,7 @@
         </activity>
         <activity android:name="com.job.whatsappstories.commoners.BaseActivity" />
         <activity android:name="com.job.whatsappstories.activities.ImageActivity" />
-        <activity android:name="com.job.whatsappstories.activities.VideoActivity"></activity>
+        <activity android:name="com.job.whatsappstories.activities.VideoActivity"/>
     </application>
 
 </manifest>

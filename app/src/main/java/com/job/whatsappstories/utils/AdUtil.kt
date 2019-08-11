@@ -122,7 +122,7 @@ fun adBizLogicVideo(mRewardedVideoAd: RewardedVideoAd, story: Story,
         sharedPrefsEditor.putInt(Constants.VIDEO_SAVE_CLICKS, resultVid)
 
         Timber.tag("AdUtil").d("vidClickCount = $vidClickCount   story.type = ${story.type}")
-        if (multipleOfThree(resultVid)) displayVideoAd(mRewardedVideoAd)
+        if (multipleOfTwo(resultVid)) displayVideoAd(mRewardedVideoAd)
 
     }
     sharedPrefsEditor.apply()

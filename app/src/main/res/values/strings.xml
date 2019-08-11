@@ -5,13 +5,13 @@
 
     <!--AdMob ID-->
     <string name="admob_app_id">ca-app-pub-3733291416843196~1132657073</string>
-    <string name="production_unit_ad">ca-app-pub-3733291416843196/9269758276</string>
-    <string name="production_video_rewarded_ad">ca-app-pub-3733291416843196/7780103709</string>
+    <string name="production_unit_ad">ca-app-pub-3733291416843196/3671428800</string>
+    <string name="production_video_rewarded_ad">ca-app-pub-3733291416843196/9101162530</string>
 
     <string name="test_unit_ad">ca-app-pub-3940256099942544/1033173712</string>
     <string name="test_video_rewarded_ad">ca-app-pub-3940256099942544/5224354917</string>
 
-
+    <string name="default_notification_channel_id">com.job.whatsappstories.DEFAULT</string>
 
     <string name="video_icon">Video icon</string>
     <string name="empty">No stories added yet</string>
@@ -20,8 +20,8 @@
     <string name="share">Share</string>
     <string name="view">View</string>
     <string name="saved_empty_txt">Save your favourite image or video and it will show up here</string>
-    <string name="video_empty_txt">Video Status of friends you\'ve viewed in Whatsapp will show here</string>
-    <string name="image_empty_txt">Image Status of friends you\'ve viewed in Whatsapp will show here</string>
+    <string name="video_empty_txt">Video Status of friends you\'ve viewed in WhatApp will show here</string>
+    <string name="image_empty_txt">Image Status of friends you\'ve viewed in WhatsApp will show here</string>
 
     <string name="share_txt">It now easy to download friends WhatsApp status. Install Stories Downloader for WhatsApp</string>
     <string name="share_link">https://play.google.com/store/apps/details?id=com.job.whatsappstories</string>

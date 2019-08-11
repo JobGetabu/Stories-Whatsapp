@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import cn.jzvd.JZVideoPlayer
 import com.google.android.gms.ads.InterstitialAd
 import com.google.firebase.auth.FirebaseAuth
@@ -35,7 +36,8 @@ import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.util.*
 
-class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
+class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
+
     private var doubleBackToExit = false
     private lateinit var adapter: PagerAdapter
     private lateinit var mInterstitialAd: InterstitialAd
@@ -80,6 +82,13 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
 
         isUserPro(savedInstanceState)
 
+        //set up refresh state files
+        swipeRefresh.setOnRefreshListener(this)
+    }
+
+    override fun onRefresh() {
+        model.setRefresh(true)
+        Handler().postDelayed({ swipeRefresh.isRefreshing = false }, 1500)
     }
 
     private fun setupSliderDrawer(savedInstanceState: Bundle?) {
@@ -316,4 +325,5 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
 
         adapter.setSelected(STATUS)
     }
+
 }

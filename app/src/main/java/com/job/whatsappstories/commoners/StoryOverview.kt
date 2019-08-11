@@ -44,7 +44,7 @@ class StoryOverview : Dialog, View.OnClickListener {
 
         if (isFromSaved.equals("TRUE")) {
             save.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_android_delete, R.color.secondaryText, 15))
-            save.setText("Delete")
+            save.text = "Delete"
 
         } else save.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_android_download, R.color.secondaryText, 15))
 
@@ -108,15 +108,13 @@ class StoryOverview : Dialog, View.OnClickListener {
                     K.TYPE_IMAGE -> {
                         val image = BitmapFactory.decodeFile(story.path, BitmapFactory.Options())
 
-                        if (isFromSaved.equals("TRUE")){
+                        if (isFromSaved.equals("TRUE")) {
 
                             AppUtils.deleteImageFile(c, story.path!!)
                             dismiss()
-                        }
-                        else AppUtils.saveImage(c, image)
+                        } else AppUtils.saveImage(c, image)
 
                         model.setRefresh(true)
-
                     }
 
                     K.TYPE_VIDEO -> {
@@ -127,7 +125,6 @@ class StoryOverview : Dialog, View.OnClickListener {
                             dismiss()
                         } else AppUtils.saveVideoFile(c, story.path!!)
                         model.setRefresh(true)
-
                     }
                 }
             }

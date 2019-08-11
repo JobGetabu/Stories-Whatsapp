@@ -6,7 +6,7 @@
         <item>Business </item>
         <item>0</item>
         <item>Rate</item>
-        <item>Remove ads</item>
+     <!--   <item>Remove ads</item>-->
         <item>Referral</item>
     </string-array>
 
@@ -23,7 +23,7 @@
         <item>@drawable/ic_whatsapp</item>
         <item>0</item>
         <item>@drawable/ic_like</item>
-        <item>@drawable/ic_buy</item>
+       <!-- <item>@drawable/ic_buy</item>-->
         <item>@drawable/ic_pig</item>
     </array>
 

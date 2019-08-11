@@ -100,14 +100,14 @@ fun adBizLogicImg(mInterstitialAd: InterstitialAd, story: Story,
         sharedPrefsEditor.putInt(Constants.IMAGE_SAVE_CLICKS, resultImg)
 
         Timber.tag("AdUtil").d("imgClickCount = $imgClickCount story.type = ${story.type}")
-        if (multipleOfThree(resultImg)) displayImgAd(mInterstitialAd)
+        if (multipleOfTwo(resultImg)) displayImgAd(mInterstitialAd)
 
     } else {
         val resultVid: Int = vidClickCount + 1
         sharedPrefsEditor.putInt(Constants.VIDEO_SAVE_CLICKS, resultVid)
 
         Timber.tag("AdUtil").d("vidClickCount = $vidClickCount   story.type = ${story.type}")
-        if (multipleOfThree(resultVid)) displayImgAd(mInterstitialAd)
+        if (multipleOfTwo(resultVid)) displayImgAd(mInterstitialAd)
     }
     sharedPrefsEditor.apply()
 }
@@ -122,7 +122,7 @@ fun adBizLogicVideo(mRewardedVideoAd: RewardedVideoAd, story: Story,
         sharedPrefsEditor.putInt(Constants.VIDEO_SAVE_CLICKS, resultVid)
 
         Timber.tag("AdUtil").d("vidClickCount = $vidClickCount   story.type = ${story.type}")
-        if (multipleOfFive(resultVid)) displayVideoAd(mRewardedVideoAd)
+        if (multipleOfThree(resultVid)) displayVideoAd(mRewardedVideoAd)
 
     }
     sharedPrefsEditor.apply()
@@ -225,8 +225,6 @@ fun handleInvite(activity: Activity, intent: Intent){
 
                     }
                 }
-
-
             }
 }
 

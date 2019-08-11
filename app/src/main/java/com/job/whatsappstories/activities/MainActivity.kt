@@ -51,7 +51,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         private const val BUSINESS_STATUS = 1
         private const val RATE = 3
         private const val REMOVE_ADS = 4
-        private const val REFERRAL = 5
+        private const val REFERRAL = 4
         private const val SKU_REMOVE_ADS = "remove_ad"
     }
 
@@ -99,12 +99,12 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
         screenIcons = loadScreenIcons()
         screenTitles = loadScreenTitles()
 
-        val adapter = DrawerAdapter(Arrays.asList(
+        val adapter = DrawerAdapter(listOf(
                 createItemFor(STATUS).setChecked(true),
                 createItemFor(BUSINESS_STATUS),
                 SpaceItem(24),
                 createItemFor(RATE),
-                createItemFor(REMOVE_ADS),
+                //createItemFor(REMOVE_ADS),
                 createItemFor(REFERRAL)))
 
         adapter.setListener(this)
@@ -184,10 +184,9 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener {
                 val userPrefs = Application.instance.getPrefs()
                 val isPro = userPrefs.getBoolean(IS_PRO_USER, false)
 
-                if (!isPro){
+                if (!isPro) {
 
-                }
-                else {
+                } else {
                     //is pro do REFERRAL
                     val referDialogue = ReferDialogue(this)
                     referDialogue.show()

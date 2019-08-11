@@ -1,14 +1,15 @@
 package com.job.whatsappstories.fragments
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.tabs.TabLayout
 import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.BaseFragment
+import com.job.whatsappstories.utils.AppExecutors
 import com.job.whatsappstories.utils.PagerAdapter
 import com.job.whatsappstories.viewmodel.WhatsModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -63,8 +64,10 @@ class WhatsFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     private fun initViews() {
 
-        setupViewPager()
-        setupTabs()
+        AppExecutors().mainThread().execute {
+            setupViewPager()
+            setupTabs()
+        }
     }
 
     //region SETUP TABS

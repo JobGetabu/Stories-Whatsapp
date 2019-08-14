@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--https://stackoverflow.com/questions/42516126/fileprovider-illegalargumentexception-failed-to-find-configured-root-->
+<!--https://inthecheesefactory.com/blog/how-to-share-access-to-file-with-fileprovider-on-android-nougat/en-->
+<paths>
+    <external-cache-path
+        name="cache"
+        path="camera" />
+
+
+    <external-path
+        name="my_images"
+        path="Android/data/ke.co.presta.lender/files/Pictures" />
+
+    <external-path
+        name="my_images"
+        path="Pictures" />
+
+    <external-path name="external_files" path="."/>
+</paths>

@@ -17,7 +17,6 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
         android:theme="@style/MyMaterialTheme">
 
         <!--  AdMob App ID: ca-app-pub-3733291416843196~1132657073 -->

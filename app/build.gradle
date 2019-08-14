@@ -21,7 +21,7 @@ ext.versionMajor = 3
 ext.versionMinor = 0
 ext.versionPatch = 1
 ext.versionClassifier = null
-ext.isSnapshot = true  //only true while in development
+ext.isSnapshot = false  //only true while in development
 ext.minimumSdkVersion = 17
 
 

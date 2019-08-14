@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import cn.jzvd.JZVideoPlayer
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.material.snackbar.Snackbar
@@ -46,8 +45,7 @@ import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.util.*
 
-class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener,
-        SwipeRefreshLayout.OnRefreshListener, InstallStateUpdatedListener {
+class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, InstallStateUpdatedListener {
 
     private var doubleBackToExit = false
     private lateinit var adapter: PagerAdapter
@@ -93,19 +91,16 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener,
 
         isUserPro(savedInstanceState)
 
-        //set up refresh state files
-        swipeRefresh.setOnRefreshListener(this)
-
         //app update global init
         appUpdateManager = AppUpdateManagerFactory.create(this)
         appUpdateManager.registerListener(this)
         appUpdatePrep()
     }
 
-    override fun onRefresh() {
+    private fun refreshStatus() {
         model.setRefresh(true)
-        Handler().postDelayed({ swipeRefresh.isRefreshing = false }, 1500)
     }
+
 
     private fun setupSliderDrawer(savedInstanceState: Bundle?) {
         setSupportActionBar(toolbar)
@@ -154,6 +149,8 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener,
         when (item.itemId) {
 
             R.id.share_app -> AppUtils.shareApp(this)
+
+            R.id.menu_refresh -> refreshStatus()
         }
 
         return true
@@ -186,7 +183,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener,
 
                 if (isPackageInstalled(Constants.WHATAPP_PACKAGE_NAME, packageManager)) {
 
-                    model.setCurrentFile(K.WHATSAPP_STORIES)
+                    model.setCurrentFile(K.WHATSAPP_STORIES(this))
                 } else {
 
                     model.setCurrentFile(K.GBWHATSAPP_STORIES)
@@ -195,9 +192,9 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener,
                 showFragment(WhatsFragment.createFor(screenTitles[position]))
             }
             BUSINESS_STATUS -> {
-                model.setCurrentFile(K.WHATSAPP_BUSINESS_STORIES)
+                model.setCurrentFile(K.WHATSAPP_BUSINESS_STORIES(this))
                 if (isPackageInstalled(Constants.WHATAPP_BUSINESS_PACKAGE_NAME, packageManager)) {
-                    model.setCurrentFile(K.WHATSAPP_BUSINESS_STORIES)
+                    model.setCurrentFile(K.WHATSAPP_BUSINESS_STORIES(this))
 
                 } else {
                     toast(getString(R.string.WA_Biz_not_installed), Toast.LENGTH_LONG)

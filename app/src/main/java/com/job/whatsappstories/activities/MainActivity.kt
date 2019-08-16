@@ -290,6 +290,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
 
     override fun onDestroy() {
         super.onDestroy()
+        appUpdateManager.unregisterListener(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

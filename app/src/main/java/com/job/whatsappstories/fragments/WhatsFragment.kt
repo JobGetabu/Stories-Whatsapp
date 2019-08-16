@@ -4,20 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.BaseFragment
 import com.job.whatsappstories.utils.AppExecutors
 import com.job.whatsappstories.utils.PagerAdapter
 import com.job.whatsappstories.viewmodel.WhatsModel
-import kotlinx.android.synthetic.main.activity_main.*
 import timber.log.Timber
 
 class WhatsFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private var doubleBackToExit = false
     private lateinit var adapter: PagerAdapter
+    private lateinit var childFragManager: FragmentManager
+    private lateinit var vp: ViewPager
+    private lateinit var tabs: TabLayout
 
      companion object {
          private const val IMAGES = "IMAGES"
@@ -40,7 +44,11 @@ class WhatsFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.activity_main, container, false)
+        childFragManager = childFragmentManager
+        val v = inflater.inflate(R.layout.activity_main, container, false)
+        vp = v.findViewById(R.id.viewpager)
+        tabs = v.findViewById(R.id.tabs)
+        return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,22 +80,22 @@ class WhatsFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     //region SETUP TABS
 
     private fun setupViewPager() {
-        adapter = PagerAdapter(childFragmentManager, context)
+        adapter = PagerAdapter(childFragManager, context)
         val images = ImagesFragment()
         val videos = VideosFragment()
         val saved = SavedFragment()
 
         adapter.addAllFrags(images, videos, saved)
         adapter.addAllTitles(IMAGES, VIDEOS, SAVED)
-        viewpager.offscreenPageLimit = 2
-        viewpager.adapter = adapter
-        viewpager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
+        vp.offscreenPageLimit = 2
+        vp.adapter = adapter
+        vp.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
 
     }
 
 
     private fun setupTabs() {
-        tabs.setupWithViewPager(viewpager)
+        tabs.setupWithViewPager(vp)
         tabs.addOnTabSelectedListener(this)
     }
 
@@ -100,7 +108,7 @@ class WhatsFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     override fun onTabSelected(tab: TabLayout.Tab?) {
-        viewpager.setCurrentItem(tab!!.position, true)
+        vp.setCurrentItem(tab!!.position, true)
     }
 
     fun refreshPages(){

@@ -58,12 +58,11 @@ class WhatsFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
         model.getRefresh().observe(this, Observer {
 
-            if(it!!) adapter.notifyDataSetChanged()
+            if(it!! && ::adapter.isInitialized) adapter.notifyDataSetChanged()
         })
     }
 
     private fun initViews() {
-
         AppExecutors().mainThread().execute {
             setupViewPager()
             setupTabs()

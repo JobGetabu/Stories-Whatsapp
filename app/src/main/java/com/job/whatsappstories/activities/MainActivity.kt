@@ -183,7 +183,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
 
                 if (isPackageInstalled(Constants.WHATAPP_PACKAGE_NAME, packageManager)) {
 
-                    model.setCurrentFile(K.WHATSAPP_STORIES(this))
+                    model.setCurrentFile(K.WHATSAPP_STORIES)
                 } else {
 
                     model.setCurrentFile(K.GBWHATSAPP_STORIES)
@@ -192,9 +192,9 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
                 showFragment(WhatsFragment.createFor(screenTitles[position]))
             }
             BUSINESS_STATUS -> {
-                model.setCurrentFile(K.WHATSAPP_BUSINESS_STORIES(this))
+                model.setCurrentFile(K.WHATSAPP_BUSINESS_STORIES)
                 if (isPackageInstalled(Constants.WHATAPP_BUSINESS_PACKAGE_NAME, packageManager)) {
-                    model.setCurrentFile(K.WHATSAPP_BUSINESS_STORIES(this))
+                    model.setCurrentFile(K.WHATSAPP_BUSINESS_STORIES)
 
                 } else {
                     toast(getString(R.string.WA_Biz_not_installed), Toast.LENGTH_LONG)

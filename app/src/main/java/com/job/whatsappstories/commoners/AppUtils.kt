@@ -169,9 +169,12 @@ object AppUtils {
     }
 
     fun shareVideo(context: Context, path: String) {
-        val intent = Intent(Intent.ACTION_SEND, Uri.parse(path))
+        val uri = Uri.fromFile(File(path))
+        val intent = Intent(Intent.ACTION_SEND, uri)
         intent.setDataAndType(Uri.parse(path), "video/*")
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(path))
+        //intent.setPackage(WHATAPP_PACKAGE_NAME)
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         context.startActivity(Intent.createChooser(intent, "Share via..."))
     }
 

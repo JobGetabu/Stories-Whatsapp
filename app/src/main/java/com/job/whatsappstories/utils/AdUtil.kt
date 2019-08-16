@@ -48,7 +48,9 @@ fun initLoadAdUnit(mInterstitialAd: InterstitialAd, activity: Activity) {
             activity.getString(R.string.production_unit_ad)
         }
 
-        loadAd(AdRequest.Builder().build())
+        loadAd(AdRequest.Builder()
+                .addTestDevice("B4216FE977BB645F9ACC51A91AE31118")
+                .build())
     }
 }
 
@@ -56,11 +58,15 @@ fun initLoadVideoAdUnit(mRewardedVideoAd: RewardedVideoAd, activity: Activity) {
     with(mRewardedVideoAd) {
         if (BuildConfig.DEBUG) {
             loadAd(activity.getString(R.string.test_video_rewarded_ad),
-                    AdRequest.Builder().build())
+                    AdRequest.Builder()
+                            .addTestDevice("B4216FE977BB645F9ACC51A91AE31118")
+                            .build())
 
         } else {
             loadAd(activity.getString(R.string.production_video_rewarded_ad),
-                    AdRequest.Builder().build())
+                    AdRequest.Builder()
+                            .addTestDevice("B4216FE977BB645F9ACC51A91AE31118")
+                            .build())
 
         }
     }

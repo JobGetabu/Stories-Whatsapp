@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.reward.RewardedVideoAd
@@ -36,7 +37,15 @@ fun multipleOfThree(num: Int) = num % 3 == 0
 
 fun multipleOfFive(num: Int) = num % 5 == 0
 
-fun multipleOfSeven(num: Int) = num % 7 == 0
+fun multipleOfSix(num: Int): Int? {
+    return if (num % 6 == 0 && num != 0) num
+    else null
+}
+
+fun multipleOfSeven(num: Int): Int?{
+    return if (num % 7 == 0 && num != 0) num
+    else null
+}
 
 fun initLoadAdUnit(mInterstitialAd: InterstitialAd, activity: Activity) {
     with(mInterstitialAd) {
@@ -161,6 +170,10 @@ fun adBizListner(mInterstitialAd: InterstitialAd) {
     }
 }
 
+//add native ads
+const val NUMBER_OF_ADS = 15
+
+
 fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {
     return try {
         packageManager.getApplicationInfo(packageName, 0).enabled
@@ -201,7 +214,7 @@ fun createDynamicLink(context: Context) {
             }
 }
 
-fun handleInvite(activity: Activity, intent: Intent){
+fun handleInvite(activity: Activity, intent: Intent) {
     FirebaseDynamicLinks.getInstance()
             .getDynamicLink(intent)
             .addOnSuccessListener(activity) { pendingDynamicLinkData ->
@@ -222,7 +235,7 @@ fun handleInvite(activity: Activity, intent: Intent){
                         deepLink.getBooleanQueryParameter("invitedby", false)) {
 
                     val referrerUid = deepLink.getQueryParameter("invitedby")
-                    if (referrerUid != null){
+                    if (referrerUid != null) {
 
                         createAnonymousAccountWithReferrerInfo(referrerUid)
 
@@ -243,14 +256,14 @@ private fun createAnonymousAccountWithReferrerInfo(referrerUid: String?) {
                 val user = FirebaseAuth.getInstance().currentUser
                 val token = FirebaseInstanceId.getInstance().token.toString()
                 //use firestore
-                val myUser = User(user!!.uid,referrerUid!!,0,token,false)
+                val myUser = User(user!!.uid, referrerUid!!, 0, token, false)
 
                 FirebaseFirestore.getInstance().collection(USER_COL)
                         .document(referrerUid)
                         .set(myUser)
                         .addOnCompleteListener { task ->
-                            if (task.isComplete)  Timber.d("Account created for $referrerUid")
-                            else  Timber.e(task.exception, "Account creation failure for $referrerUid")
+                            if (task.isComplete) Timber.d("Account created for $referrerUid")
+                            else Timber.e(task.exception, "Account creation failure for $referrerUid")
                         }
             }
 }

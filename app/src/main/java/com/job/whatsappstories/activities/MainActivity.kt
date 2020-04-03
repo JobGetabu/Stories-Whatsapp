@@ -3,13 +3,21 @@ package com.job.whatsappstories.activities
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Patterns
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +25,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import cn.jzvd.JZVideoPlayer
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -27,6 +37,7 @@ import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.iid.FirebaseInstanceId
 import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.*
@@ -43,6 +54,7 @@ import com.yarolegovich.slidingrootnav.SlidingRootNav
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import kotlinx.android.synthetic.main.home_main.*
 import kotlinx.android.synthetic.main.menu_left_drawer.*
+import kotlinx.android.synthetic.main.sheet_subscribe.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.util.*
@@ -58,6 +70,9 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
     private lateinit var model: WhatsModel
     private lateinit var auth: FirebaseAuth
     private lateinit var appUpdateManager: AppUpdateManager
+
+    private lateinit var mBehavior: BottomSheetBehavior<FrameLayout>
+    private var mBottomSheetDialog: BottomSheetDialog? = null
 
 
     companion object {
@@ -108,6 +123,9 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
                     val token = task.result!!.token
                     Timber.d("Firebase_token: $token")
                 })
+
+        val bottomSheet = findViewById<FrameLayout>(R.id.bottom_sheet)
+        mBehavior = BottomSheetBehavior.from(bottomSheet)
     }
 
     private fun refreshStatus() {
@@ -232,9 +250,15 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
 
             REFERRAL -> {
                 val referDialogue = ReferDialogue(this)
-                referDialogue.show()
+                //referDialogue.show()
 
-                toast("Earn with referrals")
+                toast("Earning with referrals, Coming soon")
+                showBottomSheetDialog()
+
+                /*Snackbar.make(findViewById(android.R.id.content), "Earning with referrals, Coming soon",
+                        Snackbar.LENGTH_LONG).setAction("Am in") {
+                }*/
+
             }
             RATE -> {
                 toast("Love this app give us a 5 star rating", Toast.LENGTH_LONG)
@@ -419,5 +443,65 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
     }
 
     //endregion
+
+
+    //capture subscriptions
+
+    private fun showBottomSheetDialog() {
+        if (mBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+            mBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+        val view: View = layoutInflater.inflate(R.layout.sheet_subscribe, null)
+
+        view.findViewById<EditText>(R.id.editText_email).setOnClickListener {
+
+        }
+        view.findViewById<Button>(R.id.subBtn).setOnClickListener {
+            val email = view.findViewById<EditText>(R.id.editText_email).text.toString()
+            if (!email.isValidEmail()) {
+                toast("Enter valid email")
+                return@setOnClickListener
+            }
+            pushToDb(email)
+            toast("Thank you!")
+
+            mBottomSheetDialog?.hide()
+        }
+        view.findViewById<AppCompatImageButton>(R.id.close_btn).setOnClickListener {
+            mBottomSheetDialog?.hide()
+            val email = view.findViewById<EditText>(R.id.editText_email).text.toString()
+            if (email.isValidEmail()) {
+                pushToDb(email)
+            }
+        }
+
+        mBottomSheetDialog = BottomSheetDialog(this)
+        mBottomSheetDialog?.setContentView(view)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBottomSheetDialog?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        }
+
+        // set background transparent
+        (view.parent as View).setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent))
+        mBottomSheetDialog?.show()
+
+        mBottomSheetDialog?.setOnDismissListener {
+            mBottomSheetDialog = null
+        }
+    }
+
+    private fun CharSequence?.isValidEmail() = !isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
+
+    private fun pushToDb(emails: String) {
+        val map = hashMapOf<String, String>()
+        map["email"] = emails
+        FirebaseFirestore.getInstance()
+                .collection("emails")
+                .document()
+                .set(map)
+                .addOnSuccessListener {
+                    Timber.d("Pushed email")
+                }
+    }
 
 }

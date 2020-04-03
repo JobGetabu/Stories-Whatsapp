@@ -8,10 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
@@ -52,7 +56,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         initViews()
 
         model = activity?.run {
-            ViewModelProviders.of(this).get(WhatsModel::class.java)
+            ViewModelProvider(this).get(WhatsModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
 
@@ -73,6 +77,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
             fileName = it!!
 
             loadStories(fileName)
+            loadNativeAds(adapter, this::insertAdsInStoryItems)
         })
     }
 
@@ -172,7 +177,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         val overview = StoryOverview(activity!!, story, model)
         overview.show()
 
-        adBizLogicVideo(mRewardedVideoAd, story, sharedPrefsEditor, sharedPrefs)
+        //adBizLogicVideo(mRewardedVideoAd, story, sharedPrefsEditor, sharedPrefs)
 
     }
 
@@ -232,5 +237,4 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         super.onDestroy()
         mRewardedVideoAd.destroy(activity)
     }
-
 }

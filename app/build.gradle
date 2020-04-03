@@ -146,6 +146,8 @@ dependencies {
     // ViewModel and LiveData
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
+    //ads
+    implementation project(':nativetemplates')
 
     //firebase
     implementation 'com.google.firebase:firebase-core:17.3.0'

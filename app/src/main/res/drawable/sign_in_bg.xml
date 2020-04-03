@@ -5,10 +5,8 @@
         android:angle="45"
         android:centerColor="@color/greenb2"
         android:startColor="@color/greenb2"
-        android:endColor="@color/greenb3"/>
-    <stroke
-        android:color="@color/greenb"
-        android:width="2dp"/>
+        android:endColor="@color/greenb2"/>
+
     <corners
-        android:radius="25dp"/>
+        android:radius="30dp"/>
 </shape>

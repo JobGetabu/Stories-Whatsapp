@@ -8,10 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.job.whatsappstories.R
 import com.job.whatsappstories.adapters.StoriesAdapter
 import com.job.whatsappstories.callbacks.StoryCallback
@@ -25,7 +29,9 @@ import kotlinx.android.synthetic.main.fragment_images.*
 import kotlinx.android.synthetic.main.image_empty.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import timber.log.Timber
 import java.io.File
+
 
 class ImagesFragment : BaseFragment(), StoryCallback {
     private lateinit var adapter: StoriesAdapter
@@ -37,6 +43,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
     private lateinit var mInterstitialAd: InterstitialAd
 
     private var refreshing = false
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -54,14 +61,13 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         }
 
         model = activity?.run {
-            ViewModelProviders.of(this).get(WhatsModel::class.java)
+            ViewModelProvider(this).get(WhatsModel::class.java)
         } ?: throw Exception("Invalid Activity")
-
 
         fragObserver(model)
 
 
-        if (activity?.intent != null) handleInvite(activity!!,activity!!.intent)
+        if (activity?.intent != null) handleInvite(activity!!, activity!!.intent)
 
         sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE)
         sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE).edit()
@@ -78,12 +84,28 @@ class ImagesFragment : BaseFragment(), StoryCallback {
             fileName = it!!
 
             loadStories(fileName)
+            loadNativeAds(adapter, this::insertAdsInStoryItems)
         })
     }
 
     private fun initViews() {
         rv.setHasFixedSize(true)
-        rv.layoutManager = GridLayoutManager(activity!!, 3)
+        val mLayoutManager = GridLayoutManager(activity!!, 3)
+        rv.layoutManager = mLayoutManager
+
+        mLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (adapter.getItemViewType(position)) {
+                    0 -> 1
+                    1 -> 3
+                    else -> 1
+                }
+            }
+
+        }
+
+
+
         rv.addItemDecoration(RecyclerFormatter.GridItemDecoration(activity!!, 3, 5))
         rv.itemAnimator = DefaultItemAnimator()
         (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
@@ -178,8 +200,5 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         val overview = StoryOverview(activity!!, story, model)
         overview.show()
 
-        adBizLogicImg(mInterstitialAd, story, sharedPrefsEditor, sharedPrefs)
     }
-
-
 }

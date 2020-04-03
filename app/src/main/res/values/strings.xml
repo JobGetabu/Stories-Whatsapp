@@ -8,6 +8,9 @@
     <string name="production_unit_ad">ca-app-pub-3733291416843196/3671428800</string>
     <string name="production_video_rewarded_ad">ca-app-pub-3733291416843196/9101162530</string>
 
+    <string name="production_native_ad">ca-app-pub-3733291416843196/7846729806</string>
+    <string name="production_native_ad_test">ca-app-pub-3940256099942544/2247696110</string>
+
     <string name="test_unit_ad">ca-app-pub-3940256099942544/1033173712</string>
     <string name="test_video_rewarded_ad">ca-app-pub-3940256099942544/5224354917</string>
 

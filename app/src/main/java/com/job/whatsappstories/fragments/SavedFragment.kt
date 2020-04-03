@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.job.whatsappstories.R
@@ -43,11 +43,12 @@ class SavedFragment : BaseFragment(), StoryCallback {
         initViews()
 
         model = activity?.run {
-            ViewModelProviders.of(this).get(WhatsModel::class.java)
+            ViewModelProvider(this).get(WhatsModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
         fragObserver(model)
         loadStories()
+        loadNativeAds(adapter, this::insertAdsInStoryItems)
     }
 
     private fun fragObserver(model: WhatsModel) {

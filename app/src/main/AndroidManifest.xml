@@ -73,7 +73,9 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name="com.job.whatsappstories.commoners.BaseActivity" />
+        <activity android:name="com.job.whatsappstories.commoners.BaseActivity"
+
+            />
         <activity android:name="com.job.whatsappstories.activities.ImageActivity" />
         <activity android:name="com.job.whatsappstories.activities.VideoActivity"/>
     </application>

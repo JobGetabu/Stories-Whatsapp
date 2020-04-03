@@ -22,6 +22,7 @@ import com.job.whatsappstories.utils.hideView
 import com.job.whatsappstories.utils.showView
 import com.job.whatsappstories.viewmodel.WhatsModel
 import kotlinx.android.synthetic.main.fragment_saved.*
+import kotlinx.android.synthetic.main.native_bottom_ad.*
 import kotlinx.android.synthetic.main.saved_empty.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -123,6 +124,7 @@ class SavedFragment : BaseFragment(), StoryCallback {
 
     private fun noStories() {
         rv?.hideView()
+        my_template_bottom?.hideView()
         savedEmptyView?.showView()
     }
 

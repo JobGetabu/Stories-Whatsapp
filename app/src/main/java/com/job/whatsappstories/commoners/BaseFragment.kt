@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.ads.nativetemplates.NativeTemplateStyle
-import com.google.android.ads.nativetemplates.TemplateView
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
@@ -20,7 +19,9 @@ import com.job.whatsappstories.BuildConfig
 import com.job.whatsappstories.R
 import com.job.whatsappstories.adapters.StoriesAdapter
 import com.job.whatsappstories.utils.NUMBER_OF_ADS
+import com.job.whatsappstories.utils.hideView
 import com.job.whatsappstories.utils.multipleOfSeven
+import com.job.whatsappstories.utils.showView
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -92,12 +93,19 @@ open class BaseFragment : Fragment() {
                         if (!adLoader.isLoading) {
                             insertAdsInStoryItems(adapter)
                         }
+
+                        if (mNativeAds.isNullOrEmpty()) my_template_bottom.hideView()
+                        else my_template_bottom.showView()
                     }
 
                     override fun onAdLoaded() {
                         Timber.d("#Ads native ad loaded")
-                        super.onAdLoaded()
+
+                        if (mNativeAds.isNullOrEmpty()) my_template_bottom.hideView()
+                        else my_template_bottom.showView()
                     }
+
+
                 }
         ).build()
 
@@ -143,6 +151,9 @@ open class BaseFragment : Fragment() {
         //val template = requireActivity().findViewById<TemplateView>(R.id.my_template_bottom)
         my_template_bottom.setStyles(styles)
         my_template_bottom.setNativeAd(mNativeAds.last())
+
+        if (mNativeAds.isNullOrEmpty()) my_template_bottom.hideView()
+        else my_template_bottom.showView()
     }
 
 }

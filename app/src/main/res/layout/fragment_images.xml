@@ -10,7 +10,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:orientation="vertical">
 
         <include
@@ -20,13 +19,14 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:visibility="gone"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <com.cooltechworks.views.shimmer.ShimmerRecyclerView
             android:id="@+id/rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:overScrollMode="never"
+            android:layout_gravity="top"
             app:shimmer_demo_angle="20"
             app:shimmer_demo_child_count="15"
             app:shimmer_demo_grid_child_count="3"

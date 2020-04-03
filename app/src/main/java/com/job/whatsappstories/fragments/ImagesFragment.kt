@@ -193,6 +193,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
 
     private fun noStories() {
         rv?.hideView()
+        my_template_bottom?.hideView()
         imageEmptyView?.showView()
     }
 

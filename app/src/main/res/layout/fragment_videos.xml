@@ -11,7 +11,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:orientation="vertical">
 
         <include
@@ -29,6 +28,7 @@
             android:layout_height="match_parent"
             android:overScrollMode="never"
             app:shimmer_demo_angle="20"
+            android:layout_gravity="top"
             app:shimmer_demo_child_count="15"
             app:shimmer_demo_grid_child_count="3"
             app:shimmer_demo_layout="@layout/layout_demo_grid"

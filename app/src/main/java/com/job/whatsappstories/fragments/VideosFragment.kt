@@ -29,6 +29,7 @@ import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.*
 import com.job.whatsappstories.viewmodel.WhatsModel
 import kotlinx.android.synthetic.main.fragment_videos.*
+import kotlinx.android.synthetic.main.native_bottom_ad.*
 import kotlinx.android.synthetic.main.video_empty.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -178,6 +179,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
     private fun noStories() {
         rv?.hideView()
+        my_template_bottom?.hideView()
         videoEmptyView?.showView()
     }
 

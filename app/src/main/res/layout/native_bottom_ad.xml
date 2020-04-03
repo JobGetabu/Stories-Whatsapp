@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fillViewport="true"
+    android:layout_gravity="bottom"
     app:gnt_template_type="@layout/gnt_medium_template_view"
     tools:context=".fragments.SavedFragment">
 

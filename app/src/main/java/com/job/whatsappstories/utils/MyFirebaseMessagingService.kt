@@ -16,14 +16,14 @@ import java.util.*
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
 
-    override fun onNewToken(s: String?) {
+
+    override fun onNewToken(s: String) {
         super.onNewToken(s)
 
         Timber.d(s)
-
     }
 
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
         //Handle notifications with data payload for your app

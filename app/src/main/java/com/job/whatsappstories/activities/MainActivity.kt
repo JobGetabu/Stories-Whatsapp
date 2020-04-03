@@ -12,10 +12,11 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.jzvd.JZVideoPlayer
 import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -26,6 +27,7 @@ import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.iid.FirebaseInstanceId
 import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.*
 import com.job.whatsappstories.fragments.WhatsFragment
@@ -78,7 +80,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
         setContentView(R.layout.home_main)
         setSupportActionBar(toolbar)
 
-        model = ViewModelProviders.of(this).get(WhatsModel::class.java)
+        model = ViewModelProvider(this).get(WhatsModel::class.java)
 
         supportActionBar?.title = getString(R.string.app_name)
         mInterstitialAd = InterstitialAd(this)
@@ -95,6 +97,17 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
         appUpdateManager = AppUpdateManagerFactory.create(this)
         appUpdateManager.registerListener(this)
         appUpdatePrep()
+
+        FirebaseInstanceId.getInstance().instanceId
+                .addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        Timber.w(task.exception)
+                        return@OnCompleteListener
+                    }
+                    // Get new Instance ID token
+                    val token = task.result!!.token
+                    Timber.d("Firebase_token: $token")
+                })
     }
 
     private fun refreshStatus() {

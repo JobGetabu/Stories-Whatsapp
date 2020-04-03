@@ -83,7 +83,20 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
     private fun initViews() {
         rv.setHasFixedSize(true)
-        rv.layoutManager = GridLayoutManager(activity!!, 3)
+
+        val mLayoutManager = GridLayoutManager(activity!!, 3)
+        rv.layoutManager = mLayoutManager
+        mLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (adapter.getItemViewType(position)) {
+                    0 -> 1
+                    1 -> 3
+                    else -> 1
+                }
+            }
+        }
+
+
         rv.addItemDecoration(RecyclerFormatter.GridItemDecoration(activity!!, 3, 5))
         rv.itemAnimator = DefaultItemAnimator()
         (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false

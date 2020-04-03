@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.ads.nativetemplates.TemplateView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_template_bottom"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    app:gnt_template_type="@layout/gnt_medium_template_view"
+    tools:context=".fragments.SavedFragment">
+
+</com.google.android.ads.nativetemplates.TemplateView>

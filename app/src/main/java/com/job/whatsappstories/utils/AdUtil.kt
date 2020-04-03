@@ -171,7 +171,7 @@ fun adBizListner(mInterstitialAd: InterstitialAd) {
 }
 
 //add native ads
-const val NUMBER_OF_ADS = 15
+var NUMBER_OF_ADS = 20
 
 
 fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {

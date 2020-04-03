@@ -1,30 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.VideosFragment">
 
-    <include
-        layout="@layout/video_empty"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <com.cooltechworks.views.shimmer.ShimmerRecyclerView
-        android:id="@+id/rv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:overScrollMode="never"
-        tools:listitem="@layout/item_story"
-        app:shimmer_demo_child_count="15"
-        app:shimmer_demo_grid_child_count="3"
-        app:shimmer_demo_layout="@layout/layout_demo_grid"
-        app:shimmer_demo_layout_manager_type="grid"
-        app:shimmer_demo_angle="20"
-        />
+        <include
+            layout="@layout/video_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
-</RelativeLayout>
+        <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+            android:id="@+id/rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            app:shimmer_demo_angle="20"
+            app:shimmer_demo_child_count="15"
+            app:shimmer_demo_grid_child_count="3"
+            app:shimmer_demo_layout="@layout/layout_demo_grid"
+            app:shimmer_demo_layout_manager_type="grid"
+            tools:listitem="@layout/item_story" />
+
+        <include layout="@layout/native_bottom_ad"/>
+
+    </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

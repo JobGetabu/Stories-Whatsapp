@@ -30,7 +30,6 @@ import java.io.File
 
 class SavedFragment : BaseFragment(), StoryCallback {
     private lateinit var adapter: StoriesAdapter
-    private lateinit var model: WhatsModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -43,11 +42,7 @@ class SavedFragment : BaseFragment(), StoryCallback {
 
         initViews()
 
-        model = activity?.run {
-            ViewModelProvider(this).get(WhatsModel::class.java)
-        } ?: throw Exception("Invalid Activity")
-
-        fragObserver(model)
+        fragObserver(vm)
         loadStories()
         loadNativeAds(adapter, this::insertAdsInStoryItems)
     }
@@ -134,7 +129,7 @@ class SavedFragment : BaseFragment(), StoryCallback {
     }
 
     override fun onStoryClicked(v: View, story: Story) {
-        val overview = StoryOverview(activity!!, story, model,"TRUE")
+        val overview = StoryOverview(activity!!, story, vm,"TRUE")
         overview.show()
     }
 

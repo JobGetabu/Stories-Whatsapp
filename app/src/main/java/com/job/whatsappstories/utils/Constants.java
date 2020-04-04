@@ -16,4 +16,6 @@ public class Constants {
     public static final String IS_PRO_USER = "IS_PRO_USER";
     public static final String REMOVE_AD_ID = "remove_ad";
 
+    public static final String FIRST_TIME_INSTALL = "FIRST_TIME_INSTALL";
+
 }

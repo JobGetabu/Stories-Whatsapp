@@ -33,6 +33,9 @@
             app:shimmer_demo_layout="@layout/layout_demo_grid"
             app:shimmer_demo_layout_manager_type="grid"
             tools:listitem="@layout/item_story" />
+
+        <include layout="@layout/native_bottom_ad"/>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

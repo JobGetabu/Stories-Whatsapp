@@ -42,7 +42,6 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
     private lateinit var mRewardedVideoAd: RewardedVideoAd
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var sharedPrefsEditor: SharedPreferences.Editor
-    private lateinit var model: WhatsModel
     private lateinit var fileName: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -56,12 +55,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
         initViews()
 
-        model = activity?.run {
-            ViewModelProvider(this).get(WhatsModel::class.java)
-        } ?: throw Exception("Invalid Activity")
-
-
-        fragObserver(model)
+        fragObserver(vm)
 
         sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, Context.MODE_PRIVATE)
         sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, Context.MODE_PRIVATE).edit()
@@ -189,7 +183,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
     }
 
     override fun onStoryClicked(v: View, story: Story) {
-        val overview = StoryOverview(activity!!, story, model)
+        val overview = StoryOverview(activity!!, story, vm)
         overview.show()
 
         //adBizLogicVideo(mRewardedVideoAd, story, sharedPrefsEditor, sharedPrefs)

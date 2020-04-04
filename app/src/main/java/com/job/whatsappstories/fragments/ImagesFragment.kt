@@ -41,13 +41,11 @@ class ImagesFragment : BaseFragment(), StoryCallback {
     private lateinit var adapter: StoriesAdapter
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var sharedPrefsEditor: SharedPreferences.Editor
-    private lateinit var model: WhatsModel
     private lateinit var fileName: String
 
     private lateinit var mInterstitialAd: InterstitialAd
 
     private var refreshing = false
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -61,15 +59,9 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         initViews()
         if (!storagePermissionGranted()) {
             requestStoragePermission()
-            return
         }
 
-        model = activity?.run {
-            ViewModelProvider(this).get(WhatsModel::class.java)
-        } ?: throw Exception("Invalid Activity")
-
-        fragObserver(model)
-
+        fragObserver(vm)
 
         if (activity?.intent != null) handleInvite(activity!!, activity!!.intent)
 
@@ -203,7 +195,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
     }
 
     override fun onStoryClicked(v: View, story: Story) {
-        val overview = StoryOverview(activity!!, story, model)
+        val overview = StoryOverview(activity!!, story, vm)
         overview.show()
 
     }

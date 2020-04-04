@@ -48,8 +48,7 @@ import com.job.whatsappstories.menu.DrawerItem
 import com.job.whatsappstories.menu.SimpleItem
 import com.job.whatsappstories.menu.SpaceItem
 import com.job.whatsappstories.utils.*
-import com.job.whatsappstories.utils.Constants.IS_PRO_USER
-import com.job.whatsappstories.utils.Constants.USER_UID
+import com.job.whatsappstories.utils.Constants.*
 import com.job.whatsappstories.viewmodel.WhatsModel
 import com.yarolegovich.slidingrootnav.SlidingRootNav
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
@@ -251,15 +250,11 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
             }
 
             REFERRAL -> {
-                val referDialogue = ReferDialogue(this)
+                //val referDialogue = ReferDialogue(this)
                 //referDialogue.show()
 
                 toast("Earning with referrals, Coming soon")
                 showBottomSheetDialog()
-
-                /*Snackbar.make(findViewById(android.R.id.content), "Earning with referrals, Coming soon",
-                        Snackbar.LENGTH_LONG).setAction("Am in") {
-                }*/
 
             }
             RATE -> {
@@ -313,10 +308,9 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
                         Timber.d("signInAnonymously:success")
                         val user = auth.currentUser
                         val userPrefsEditor = PreferenceHelper.customPrefs(this).edit()
-                        userPrefsEditor.putString(USER_UID, user?.uid)
-                        userPrefsEditor.apply()
+                        userPrefsEditor.putString(USER_UID, user?.uid).apply()
 
-                        createAccount(user!!.uid)
+                       // createAccount(user!!.uid)
 
                     } else {
                         // If sign in fails, display a message to the user.
@@ -325,6 +319,12 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
                     }
 
                 }
+
+        //register install
+        val userPrefsEditor = PreferenceHelper.customPrefs(this)
+        val isFirstTimeInstall = userPrefsEditor.getBoolean(FIRST_TIME_INSTALL, false)
+        if (!isFirstTimeInstall) userPrefsEditor.edit().putBoolean(FIRST_TIME_INSTALL, true).apply()
+
     }
 
     override fun onDestroy() {
@@ -405,6 +405,9 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
                 } catch (e: IntentSender.SendIntentException) {
                     Timber.e(e)
                 }
+                catch (e: Exception) {
+                    Timber.e(e)
+                }
             }
         }
 
@@ -441,6 +444,9 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
                 )
             }
         } catch (e: IntentSender.SendIntentException) {
+            Timber.e(e)
+        }
+        catch (e: Exception) {
             Timber.e(e)
         }
     }

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.ads.nativetemplates.NativeTemplateStyle
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
@@ -18,10 +19,8 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.job.whatsappstories.BuildConfig
 import com.job.whatsappstories.R
 import com.job.whatsappstories.adapters.StoriesAdapter
-import com.job.whatsappstories.utils.NUMBER_OF_ADS
-import com.job.whatsappstories.utils.hideView
-import com.job.whatsappstories.utils.multipleOfSeven
-import com.job.whatsappstories.utils.showView
+import com.job.whatsappstories.utils.*
+import com.job.whatsappstories.viewmodel.WhatsModel
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -40,9 +39,7 @@ open class BaseFragment : Fragment() {
     val mNativeAds: MutableList<UnifiedNativeAd> = ArrayList()
     var adCounter: Int = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
+    val vm: WhatsModel by lazy { ViewModelProvider(requireActivity()).get(WhatsModel::class.java) }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,6 +51,13 @@ open class BaseFragment : Fragment() {
                 .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .withListener(object : PermissionListener {
                     override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                        //read files
+
+                        val userPrefsEditor = PreferenceHelper.customPrefs(requireContext())
+                        val isFirstTimeInstall = userPrefsEditor.getBoolean(Constants.FIRST_TIME_INSTALL, false)
+                        if (isFirstTimeInstall){
+                            vm.setRefresh(true)
+                        }
                     }
 
                     override fun onPermissionDenied(response: PermissionDeniedResponse) {

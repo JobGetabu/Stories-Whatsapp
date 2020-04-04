@@ -1,14 +1,10 @@
 package com.job.whatsappstories.adapters
 
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.ads.nativetemplates.NativeTemplateStyle
-import com.google.android.ads.nativetemplates.TemplateView
 import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.job.whatsappstories.R
 import com.job.whatsappstories.callbacks.StoryCallback

@@ -109,8 +109,6 @@ open class BaseFragment : Fragment() {
                         if (mNativeAds.isNullOrEmpty()) my_template_bottom.hideView()
                         else my_template_bottom.showView()
                     }
-
-
                 }
         ).build()
 

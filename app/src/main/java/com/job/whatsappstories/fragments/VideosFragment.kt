@@ -72,7 +72,6 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
             fileName = it!!
 
             loadStories(fileName)
-            loadNativeAds(adapter, this::insertAdsInStoryItems)
         })
     }
 
@@ -99,6 +98,11 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         adapter = StoriesAdapter(this, activity!!)
         rv?.showShimmerAdapter()
         rv.adapter = adapter
+
+        rv.afterMeasured {
+            if (this@VideosFragment::adapter.isInitialized)
+                loadNativeAds(this@VideosFragment.adapter, this@VideosFragment::insertAdsInStoryItems)
+        }
 
     }
 

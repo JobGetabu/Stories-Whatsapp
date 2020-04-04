@@ -71,7 +71,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
             fileName = it!!
 
             loadStories(fileName)
-            loadNativeAds(adapter, this::insertAdsInStoryItems)
+
         })
     }
 
@@ -101,9 +101,14 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         rv?.adapter = adapter
         rv?.showShimmerAdapter()
 
+        rv.afterMeasured {
+            if (this@ImagesFragment::adapter.isInitialized)
+                loadNativeAds(this@ImagesFragment.adapter, this@ImagesFragment::insertAdsInStoryItems)
+        }
+
     }
 
-    private fun loadStories(fileName: String, async: Boolean = true){
+    private fun loadStories(fileName: String, async: Boolean = true) {
         if (!storagePermissionGranted()) {
             requestStoragePermission()
             return

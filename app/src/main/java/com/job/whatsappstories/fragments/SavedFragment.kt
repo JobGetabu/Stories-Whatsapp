@@ -18,6 +18,7 @@ import com.job.whatsappstories.commoners.K
 import com.job.whatsappstories.commoners.StoryOverview
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.RecyclerFormatter
+import com.job.whatsappstories.utils.afterMeasured
 import com.job.whatsappstories.utils.hideView
 import com.job.whatsappstories.utils.showView
 import com.job.whatsappstories.viewmodel.WhatsModel
@@ -44,7 +45,6 @@ class SavedFragment : BaseFragment(), StoryCallback {
 
         fragObserver(vm)
         loadStories()
-        loadNativeAds(adapter, this::insertAdsInStoryItems)
     }
 
     private fun fragObserver(model: WhatsModel) {
@@ -73,6 +73,11 @@ class SavedFragment : BaseFragment(), StoryCallback {
         adapter = StoriesAdapter(this, activity!!)
         rv?.showShimmerAdapter()
         rv.adapter = adapter
+
+        rv.afterMeasured {
+            if (this@SavedFragment::adapter.isInitialized)
+                loadNativeAds(this@SavedFragment.adapter, this@SavedFragment::insertAdsInStoryItems)
+        }
 
     }
 

@@ -13,6 +13,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -126,4 +127,16 @@ class SquareLayout : RelativeLayout {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec)
     }
 
+}
+
+// define 'afterMeasured' layout listener:
+inline fun <T: View> T.afterMeasured(crossinline f: T.() -> Unit) {
+    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            if (measuredWidth > 0 && measuredHeight > 0) {
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+                f()
+            }
+        }
+    })
 }

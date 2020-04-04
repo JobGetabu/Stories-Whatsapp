@@ -33,6 +33,7 @@ import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.InstallState
 import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType.FLEXIBLE
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
@@ -54,7 +55,6 @@ import com.yarolegovich.slidingrootnav.SlidingRootNav
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
 import kotlinx.android.synthetic.main.home_main.*
 import kotlinx.android.synthetic.main.menu_left_drawer.*
-import kotlinx.android.synthetic.main.sheet_subscribe.*
 import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.util.*
@@ -77,6 +77,8 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
 
     companion object {
         private const val UPDATE_REQUEST_CODE = 108
+        private const val HIGH_PRIORITY_UPDATE = 4
+        private const val DAYS_FOR_FLEXIBLE_UPDATE = 7
         private const val STATUS = 0
         private const val BUSINESS_STATUS = 1
         private const val RATE = 3
@@ -389,8 +391,21 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
 
         val appUpdateInfoTask = appUpdateManager.appUpdateInfo
 
-        appUpdateInfoTask.addOnSuccessListener {
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                // Request the update.
+                try {
 
+                    if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                        appUpdateManager.startUpdateFlowForResult(appUpdateInfo, IMMEDIATE, this, UPDATE_REQUEST_CODE)
+                    } else if (appUpdateInfo.isUpdateTypeAllowed(FLEXIBLE)) {
+                        appUpdateManager.startUpdateFlowForResult(appUpdateInfo, FLEXIBLE, this, UPDATE_REQUEST_CODE)
+                    }
+
+                } catch (e: IntentSender.SendIntentException) {
+                    Timber.e(e)
+                }
+            }
         }
 
         appUpdateInfoTask.addOnFailureListener { e -> Timber.e(e, "UPDATE_NOT_AVAILABLE") }
@@ -398,16 +413,33 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
 
     private fun startUpdateFlow(appUpdateInfo: AppUpdateInfo) {
         try {
-            appUpdateManager.startUpdateFlowForResult(
-                    // Pass the intent that is returned by 'getAppUpdateInfo()'.
-                    appUpdateInfo,
-                    // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
-                    IMMEDIATE,
-                    // The current activity making the update request.
-                    this,
-                    // Include a request code to later monitor this update request.
-                    UPDATE_REQUEST_CODE
-            )
+            if (appUpdateInfo.isUpdateTypeAllowed(IMMEDIATE)) {
+                appUpdateManager.startUpdateFlowForResult(
+                        // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                        appUpdateInfo,
+                        // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                        IMMEDIATE,
+                        // The current activity making the update request.
+                        this,
+                        // Include a request code to later monitor this update request.
+                        UPDATE_REQUEST_CODE
+                )
+            }
+            //or
+
+            if (appUpdateInfo.isUpdateTypeAllowed(FLEXIBLE)) {
+
+                appUpdateManager.startUpdateFlowForResult(
+                        // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                        appUpdateInfo,
+                        // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                        FLEXIBLE,
+                        // The current activity making the update request.
+                        this,
+                        // Include a request code to later monitor this update request.
+                        UPDATE_REQUEST_CODE
+                )
+            }
         } catch (e: IntentSender.SendIntentException) {
             Timber.e(e)
         }

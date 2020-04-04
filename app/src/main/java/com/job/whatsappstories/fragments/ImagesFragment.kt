@@ -3,22 +3,14 @@ package com.job.whatsappstories.fragments
 
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.ads.nativetemplates.NativeTemplateStyle
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdLoader
-import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.job.whatsappstories.R
 import com.job.whatsappstories.adapters.StoriesAdapter
 import com.job.whatsappstories.callbacks.StoryCallback
@@ -33,7 +25,6 @@ import kotlinx.android.synthetic.main.image_empty.*
 import kotlinx.android.synthetic.main.native_bottom_ad.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
-import timber.log.Timber
 import java.io.File
 
 
@@ -79,7 +70,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         model.getCurrentFile().observe(this, Observer {
             fileName = it!!
 
-            loadStories(fileName)
+            loadStories(fileName, true)
             loadNativeAds(adapter, this::insertAdsInStoryItems)
         })
     }
@@ -102,15 +93,55 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         }
 
 
-
         rv.addItemDecoration(RecyclerFormatter.GridItemDecoration(activity!!, 3, 5))
         rv.itemAnimator = DefaultItemAnimator()
-        (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
+        (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = true
 
         adapter = StoriesAdapter(this, activity!!)
         rv?.adapter = adapter
         rv?.showShimmerAdapter()
 
+    }
+
+    private fun loadStories(fileName: String, async: Boolean = true){
+        if (!storagePermissionGranted()) {
+            requestStoragePermission()
+            return
+        }
+
+        val dir = File(fileName)
+
+        appExecutors.diskIO().execute {
+
+            val files = dir.listFiles { _, s ->
+                s.endsWith(".png") || s.endsWith(".jpg") || s.endsWith(".jpeg")
+            }
+
+            if (files != null && files.isNotEmpty()) {
+                hasStories()
+
+                if (refreshing) adapter.clearStories()
+
+                val stories = mutableListOf<Story>()
+
+                for (file in files.sortedBy { it.lastModified() }.reversed()) {
+                    val story = Story(K.TYPE_IMAGE, file.absolutePath)
+                    stories.add(story)
+                    //adapter.addStory(story)
+                }
+
+                appExecutors.mainThread().execute {
+                    adapter.addStories(stories)
+                    rv?.hideShimmerAdapter()
+                }
+
+
+                refreshing = false
+            } else {
+                noStories()
+            }
+
+        }
     }
 
     private fun loadStories(fileName: String) {

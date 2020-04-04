@@ -40,6 +40,7 @@ open class BaseFragment : Fragment() {
     var adCounter: Int = 0
 
     val vm: WhatsModel by lazy { ViewModelProvider(requireActivity()).get(WhatsModel::class.java) }
+    val appExecutors: AppExecutors by lazy { AppExecutors() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

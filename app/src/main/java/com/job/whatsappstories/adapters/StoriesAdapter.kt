@@ -47,7 +47,7 @@ class StoriesAdapter(private val callback: StoryCallback, private val context: C
         notifyItemInserted(position)
     }
 
-    fun addStories(stories: List<Story>) {
+    fun addStories(stories: MutableList<Story>) {
         this.stories.addAll(stories)
         notifyDataSetChanged()
     }

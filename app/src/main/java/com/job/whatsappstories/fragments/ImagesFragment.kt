@@ -70,7 +70,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         model.getCurrentFile().observe(this, Observer {
             fileName = it!!
 
-            loadStories(fileName, true)
+            loadStories(fileName)
             loadNativeAds(adapter, this::insertAdsInStoryItems)
         })
     }
@@ -95,7 +95,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
 
         rv.addItemDecoration(RecyclerFormatter.GridItemDecoration(activity!!, 3, 5))
         rv.itemAnimator = DefaultItemAnimator()
-        (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = true
+        (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
 
         adapter = StoriesAdapter(this, activity!!)
         rv?.adapter = adapter

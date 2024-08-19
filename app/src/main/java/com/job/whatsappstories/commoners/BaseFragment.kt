@@ -5,13 +5,12 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.ads.nativetemplates.NativeTemplateStyle
+import com.google.android.ads.nativetemplates.TemplateView
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
@@ -27,8 +26,6 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
-import kotlinx.android.synthetic.main.native_bottom_ad.*
-import org.jetbrains.anko.toast
 import timber.log.Timber
 import kotlin.math.ceil
 
@@ -42,9 +39,7 @@ open class BaseFragment : Fragment() {
     val vm: WhatsModel by lazy { ViewModelProvider(requireActivity()).get(WhatsModel::class.java) }
     val appExecutors: AppExecutors by lazy { AppExecutors() }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
+    private val my_template_bottom by lazy { requireActivity().findViewById<TemplateView>(R.id.my_template_bottom) }
 
     // User hasn't requested storage permission; request them to allow
     fun requestStoragePermission() {

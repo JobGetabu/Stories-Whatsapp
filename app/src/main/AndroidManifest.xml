@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.job.whatsappstories">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -32,14 +31,17 @@
 
 
         <meta-data
+            android:exported="false"
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
 
         <meta-data
+            android:exported="false"
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
         <meta-data
+            android:exported="false"
             android:name="firebase_crashlytics_collection_enabled"
             android:value="@bool/FIREBASE_CRASH_ENABLED"/>
 
@@ -51,7 +53,9 @@
             </intent-filter>
         </service>
 
-        <activity android:name="com.job.whatsappstories.activities.MainActivity">
+        <activity
+            android:exported="true"
+            android:name="com.job.whatsappstories.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -74,11 +78,17 @@
                     android:scheme="https" />
             </intent-filter>
         </activity>
-        <activity android:name="com.job.whatsappstories.commoners.BaseActivity"
+        <activity
+            android:exported="true"
+            android:name="com.job.whatsappstories.commoners.BaseActivity"
 
             />
-        <activity android:name="com.job.whatsappstories.activities.ImageActivity" />
-        <activity android:name="com.job.whatsappstories.activities.VideoActivity"/>
+        <activity
+            android:exported="false"
+            android:name="com.job.whatsappstories.activities.ImageActivity" />
+        <activity
+            android:exported="false"
+            android:name="com.job.whatsappstories.activities.VideoActivity"/>
     </application>
 
 </manifest>

@@ -7,15 +7,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdLoader
-import com.google.android.gms.ads.AdRequest
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView
+import com.google.android.ads.nativetemplates.TemplateView
 import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
@@ -28,11 +26,9 @@ import com.job.whatsappstories.commoners.StoryOverview
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.*
 import com.job.whatsappstories.viewmodel.WhatsModel
-import kotlinx.android.synthetic.main.fragment_videos.*
-import kotlinx.android.synthetic.main.native_bottom_ad.*
-import kotlinx.android.synthetic.main.video_empty.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
 
@@ -43,6 +39,10 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var sharedPrefsEditor: SharedPreferences.Editor
     private lateinit var fileName: String
+
+    private val rv by lazy { requireActivity().findViewById<ShimmerRecyclerView>(R.id.rv) }
+    private val videoEmptyView by lazy { requireActivity().findViewById<ConstraintLayout>(R.id.videoEmptyView) }
+    private val my_template_bottom by lazy { requireActivity().findViewById<TemplateView>(R.id.my_template_bottom) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -57,28 +57,31 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
         fragObserver(vm)
 
-        sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, Context.MODE_PRIVATE)
-        sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, Context.MODE_PRIVATE).edit()
+        sharedPrefs = requireActivity().getSharedPreferences(activity?.applicationContext?.packageName, Context.MODE_PRIVATE)
+        sharedPrefsEditor = requireActivity().getSharedPreferences(activity?.applicationContext?.packageName, Context.MODE_PRIVATE).edit()
 
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(activity)
         mRewardedVideoAd.rewardedVideoAdListener = this
 
-        initLoadVideoAdUnit(mRewardedVideoAd, activity!!)
+        initLoadVideoAdUnit(mRewardedVideoAd, requireActivity())
     }
 
     private fun fragObserver(model: WhatsModel) {
 
-        model.getCurrentFile().observe(this, Observer {
+        model.getCurrentFile().observe(viewLifecycleOwner) {
             fileName = it!!
 
-            loadStories(fileName)
-        })
+            lifecycleScope.launch {
+                loadStories(fileName)
+            }
+
+        }
     }
 
     private fun initViews() {
         rv.setHasFixedSize(true)
 
-        val mLayoutManager = GridLayoutManager(activity!!, 3)
+        val mLayoutManager = GridLayoutManager(requireActivity(), 3)
         rv.layoutManager = mLayoutManager
         mLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -91,11 +94,11 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
         }
 
 
-        rv.addItemDecoration(RecyclerFormatter.GridItemDecoration(activity!!, 3, 5))
+        rv.addItemDecoration(RecyclerFormatter.GridItemDecoration(requireActivity(), 3, 5))
         rv.itemAnimator = DefaultItemAnimator()
         (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
 
-        adapter = StoriesAdapter(this, activity!!)
+        adapter = StoriesAdapter(this, requireActivity())
         rv?.showShimmerAdapter()
         rv.adapter = adapter
 
@@ -106,7 +109,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
     }
 
-    private fun loadStories(fileName: String) {
+    private suspend fun loadStories(fileName: String) {
         if (!storagePermissionGranted()) {
             requestStoragePermission()
             return
@@ -114,13 +117,13 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
         val dir = File(fileName)
 
-        doAsync {
+        withContext(Dispatchers.IO){
+
             val files = dir.listFiles { _, s ->
                 s.endsWith(".mp4") || s.endsWith(".gif")
             }
 
-            uiThread {
-
+            withContext(Dispatchers.Main){
                 if (files != null && files.isNotEmpty()) {
                     hasStories()
 
@@ -135,12 +138,11 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
                     noStories()
                 }
             }
-
         }
 
     }
 
-    private fun loadStoriesGB(fileName: String) {
+   /* private fun loadStoriesGB(fileName: String) {
         if (!storagePermissionGranted()) {
             requestStoragePermission()
             return
@@ -173,7 +175,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
 
         }
 
-    }
+    }*/
 
     private fun noStories() {
         rv?.hideView()
@@ -187,7 +189,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
     }
 
     override fun onStoryClicked(v: View, story: Story) {
-        val overview = StoryOverview(activity!!, story, vm)
+        val overview = StoryOverview(requireActivity(), story, vm)
         overview.show()
 
         //adBizLogicVideo(mRewardedVideoAd, story, sharedPrefsEditor, sharedPrefs)
@@ -207,7 +209,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
     override fun onRewardedVideoAdClosed() {
         Timber.tag("AdUtil").d("onRewardedVideoAdClosed")
         //good place to reload
-        initLoadVideoAdUnit(mRewardedVideoAd, activity!!)
+        initLoadVideoAdUnit(mRewardedVideoAd, requireActivity())
     }
 
     override fun onRewardedVideoAdFailedToLoad(errorCode: Int) {
@@ -230,7 +232,7 @@ class VideosFragment : BaseFragment(), StoryCallback, RewardedVideoAdListener {
     override fun onRewardedVideoCompleted() {
         Timber.tag("AdUtil").d("onRewardedVideoCompleted")
         //good place to reload
-        initLoadVideoAdUnit(mRewardedVideoAd, activity!!)
+        initLoadVideoAdUnit(mRewardedVideoAd, requireActivity())
     }
 
 

@@ -8,13 +8,15 @@ import com.job.whatsappstories.commoners.BaseActivity
 import com.job.whatsappstories.commoners.K
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.loadUrl
-import kotlinx.android.synthetic.main.activity_video.*
 
 class VideoActivity : BaseActivity() {
+
+    private val video = findViewById<JZVideoPlayerStandard>(R.id.video)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
+
 
         val story = intent.getSerializableExtra(K.STORY) as Story
 

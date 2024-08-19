@@ -2,12 +2,10 @@ package com.job.whatsappstories.commoners
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
-import com.crashlytics.android.Crashlytics
 import com.google.android.gms.ads.MobileAds
 import com.job.whatsappstories.BuildConfig
 import com.job.whatsappstories.R
 import com.job.whatsappstories.utils.PreferenceHelper.customPrefs
-import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 
 
@@ -39,7 +37,6 @@ class Application : MultiDexApplication() {
         //vector enabled for > 19
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
 
-        if( !BuildConfig.DEBUG)  Fabric.with(this,Crashlytics())
 
     }
 

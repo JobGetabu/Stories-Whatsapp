@@ -1,37 +1,36 @@
-apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-
-apply plugin: 'kotlin-kapt'
-
-apply plugin: 'kotlin-platform-android'
-
-apply plugin: 'com.google.gms.google-services'
-
-apply plugin: 'io.fabric'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'com.google.gms.google-services'
+    id 'kotlin-kapt'
+    id 'idea'
+    id 'com.google.firebase.crashlytics'
+    id 'kotlin-parcelize'
+}
 
 // Load keystore
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-ext.versionMajor = 3
-ext.versionMinor = 3
+ext.versionMajor = 4
+ext.versionMinor = 0
 ext.versionPatch = 0
 ext.versionClassifier = null
 ext.isSnapshot = false  //only true while in development
-ext.minimumSdkVersion = 17
+ext.minimumSdkVersion = 23
 
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdk 34
+    buildToolsVersion = "34.0.0"
+    namespace "com.job.whatsappstories"
+
     defaultConfig {
         applicationId "com.job.whatsappstories"
-        minSdkVersion 17
-        targetSdkVersion 29
+
+        minSdkVersion 23
+        targetSdkVersion 34
         versionCode generateVersionCode() // 170302000
         versionName generateVersionName() // 3.0.5
         multiDexEnabled true
@@ -84,6 +83,16 @@ android {
         //may speed up incremental builds
         preDexLibraries true
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+        javaParameters = true
+    }
 }
 
 
@@ -93,18 +102,18 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Support libs
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.exifinterface:exifinterface:1.2.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
     // Kotlin libs
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "org.jetbrains.anko:anko-common:$anko_version"
+    /*implementation "org.jetbrains.anko:anko-common:$anko_version"
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
-    implementation "org.jetbrains.anko:anko-design:$anko_version"
+    implementation "org.jetbrains.anko:anko-design:$anko_version"*/
 
     // Images libs
     implementation 'com.github.bumptech.glide:glide:' + glide_version
@@ -122,7 +131,7 @@ dependencies {
     implementation 'com.makeramen:roundedimageview:2.3.0'
 
     //play update core
-    implementation 'com.google.android.play:core:1.6.1'
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
 
     // Other libs
     implementation 'com.github.kizitonwose.time:time-android:1.0.1'
@@ -142,7 +151,7 @@ dependencies {
     implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
 
     //sliding root nav
-    implementation 'com.yarolegovich:sliding-root-nav:1.1.0'
+    implementation 'com.github.JobGetabu:SlidingRootNav:v2.0.2'
 
     // ViewModel and LiveData
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
@@ -151,15 +160,21 @@ dependencies {
     implementation project(':nativetemplates')
 
     //firebase
-    implementation 'com.google.firebase:firebase-core:17.3.0'
+    implementation platform('com.google.firebase:firebase-bom:33.1.2')
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-config-ktx'
+    implementation 'com.google.firebase:firebase-dynamic-links-ktx'
+
+    implementation 'com.google.firebase:firebase-inappmessaging-ktx'
+    implementation 'com.google.firebase:firebase-inappmessaging-display-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-auth-ktx'
+
     implementation 'com.google.firebase:firebase-ads:19.0.1'
-    implementation 'com.google.firebase:firebase-messaging:20.1.4'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-    implementation 'com.google.firebase:firebase-dynamic-links:19.1.0'
-    implementation 'com.google.firebase:firebase-inappmessaging-display:19.0.4'
-    implementation 'com.google.firebase:firebase-auth:19.3.0'
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
-    implementation 'com.google.firebase:firebase-firestore:21.4.2'
 }
 
 kapt {

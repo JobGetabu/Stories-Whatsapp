@@ -5,10 +5,10 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.Window
+import android.widget.Button
 import com.job.whatsappstories.R
 import com.job.whatsappstories.utils.createDynamicLink
 import com.job.whatsappstories.utils.toast
-import kotlinx.android.synthetic.main.dialogue_refer.*
 
 class ReferDialogue : Dialog, View.OnClickListener {
     private var c: Context
@@ -24,7 +24,7 @@ class ReferDialogue : Dialog, View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.dialogue_refer)
 
-        referBtn.setOnClickListener(this)
+        findViewById<Button>(R.id.referBtn).setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {

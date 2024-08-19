@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.reward.RewardedVideoAd
@@ -15,14 +14,17 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.job.whatsappstories.BuildConfig
 import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.Application
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.models.User
 import com.job.whatsappstories.utils.Constants.USER_COL
-import org.jetbrains.anko.toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 
 
@@ -247,23 +249,41 @@ fun handleInvite(activity: Activity, intent: Intent) {
             }
 }
 
+
+suspend fun getToken(): String? {
+    return try {
+        // Await the token retrieval asynchronously
+        FirebaseMessaging.getInstance().token.await()
+    } catch (e: Exception) {
+        // Handle any errors that occur during token retrieval
+        e.printStackTrace()
+        null
+    }
+}
+
 private fun createAnonymousAccountWithReferrerInfo(referrerUid: String?) {
     FirebaseAuth.getInstance()
             .signInAnonymously()
             .addOnSuccessListener {
-                // Keep track of the referrer in the RTDB. Database calls
-                // will depend on the structure of your app's RTDB.
-                val user = FirebaseAuth.getInstance().currentUser
-                val token = FirebaseInstanceId.getInstance().token.toString()
-                //use firestore
-                val myUser = User(user!!.uid, referrerUid!!, 0, token, false)
 
-                FirebaseFirestore.getInstance().collection(USER_COL)
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    val token = getToken()
+
+                    // Keep track of the referrer in the RTDB. Database calls
+                    // will depend on the structure of your app's RTDB.
+                    val user = FirebaseAuth.getInstance().currentUser
+                    //use firestore
+                    val myUser = User(user!!.uid, referrerUid!!, 0, "$token", false)
+
+                    FirebaseFirestore.getInstance().collection(USER_COL)
                         .document(referrerUid)
                         .set(myUser)
                         .addOnCompleteListener { task ->
                             if (task.isComplete) Timber.d("Account created for $referrerUid")
                             else Timber.e(task.exception, "Account creation failure for $referrerUid")
                         }
+
+                }
             }
 }

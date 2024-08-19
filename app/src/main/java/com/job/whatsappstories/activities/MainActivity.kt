@@ -18,13 +18,14 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import cn.jzvd.JZVideoPlayer
 import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -39,7 +40,6 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.iid.FirebaseInstanceId
 import com.job.whatsappstories.R
 import com.job.whatsappstories.commoners.*
 import com.job.whatsappstories.fragments.WhatsFragment
@@ -52,9 +52,6 @@ import com.job.whatsappstories.utils.Constants.*
 import com.job.whatsappstories.viewmodel.WhatsModel
 import com.yarolegovich.slidingrootnav.SlidingRootNav
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder
-import kotlinx.android.synthetic.main.home_main.*
-import kotlinx.android.synthetic.main.menu_left_drawer.*
-import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.util.*
 
@@ -70,9 +67,14 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
     private lateinit var auth: FirebaseAuth
     private lateinit var appUpdateManager: AppUpdateManager
 
+
+
     private lateinit var mBehavior: BottomSheetBehavior<FrameLayout>
     private var mBottomSheetDialog: BottomSheetDialog? = null
 
+    //private lateinit var binding: HomeMainBinding
+    private lateinit var drawerList: RecyclerView
+    private lateinit var toolbar: Toolbar
 
     companion object {
         private const val UPDATE_REQUEST_CODE = 108
@@ -94,9 +96,13 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.home_main)
+        //binding = HomeMainBinding.inflate(layoutInflater)
+        toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+
         model = ViewModelProvider(this).get(WhatsModel::class.java)
+
 
         supportActionBar?.title = getString(R.string.app_name)
         mInterstitialAd = InterstitialAd(this)
@@ -113,17 +119,6 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
         appUpdateManager = AppUpdateManagerFactory.create(this)
         appUpdateManager.registerListener(this)
         appUpdatePrep()
-
-        FirebaseInstanceId.getInstance().instanceId
-                .addOnCompleteListener(OnCompleteListener { task ->
-                    if (!task.isSuccessful) {
-                        Timber.w(task.exception)
-                        return@OnCompleteListener
-                    }
-                    // Get new Instance ID token
-                    val token = task.result!!.token
-                    Timber.d("Firebase_token: $token")
-                })
 
         val bottomSheet = findViewById<FrameLayout>(R.id.bottom_sheet)
         mBehavior = BottomSheetBehavior.from(bottomSheet)
@@ -161,6 +156,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
 
         adapter.setListener(this)
 
+        drawerList =  findViewById<RecyclerView>(R.id.drawerList)
 
         drawerList.isNestedScrollingEnabled = false
         drawerList.layoutManager = LinearLayoutManager(this)
@@ -378,7 +374,7 @@ class MainActivity : BaseActivity(), DrawerAdapter.OnItemSelectedListener, Insta
 
         adapter.setListener(this)
 
-
+        drawerList =  findViewById<RecyclerView>(R.id.drawerList)
         drawerList.isNestedScrollingEnabled = false
         drawerList.layoutManager = LinearLayoutManager(this)
         drawerList.adapter = adapter

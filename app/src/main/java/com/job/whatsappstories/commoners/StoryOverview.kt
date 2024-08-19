@@ -13,19 +13,21 @@ import cn.jzvd.JZVideoPlayerStandard
 import com.job.whatsappstories.R
 import com.job.whatsappstories.activities.ImageActivity
 import com.job.whatsappstories.activities.VideoActivity
+import com.job.whatsappstories.databinding.OverviewStoryBinding
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.loadUrl
 import com.job.whatsappstories.utils.setDrawable
 import com.job.whatsappstories.utils.showView
 import com.job.whatsappstories.viewmodel.WhatsModel
 import com.mikepenz.ionicons_typeface_library.Ionicons
-import kotlinx.android.synthetic.main.overview_story.*
 
 class StoryOverview : Dialog, View.OnClickListener {
     private var story: Story
     private var c: Context
     private var model: WhatsModel
     private var isFromSaved: String
+
+    private lateinit var binding: OverviewStoryBinding
 
     constructor(context: Context, story: Story, model: WhatsModel, isFromSaved: String = "False") : super(context) {
         this.c = context
@@ -37,20 +39,20 @@ class StoryOverview : Dialog, View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        setContentView(R.layout.overview_story)
+        binding = OverviewStoryBinding.inflate(layoutInflater)
 
-        view.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_eye, R.color.secondaryText, 15))
-        share.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_share, R.color.secondaryText, 15))
+        binding.view.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_eye, R.color.secondaryText, 15))
+        binding.share.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_share, R.color.secondaryText, 15))
 
         if (isFromSaved.equals("TRUE")) {
-            save.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_android_delete, R.color.secondaryText, 15))
-            save.text = "Delete"
+            binding.save.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_android_delete, R.color.secondaryText, 15))
+            binding.save.text = "Delete"
 
-        } else save.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_android_download, R.color.secondaryText, 15))
+        } else binding.save.setDrawable(AppUtils.setDrawable(c, Ionicons.Icon.ion_android_download, R.color.secondaryText, 15))
 
-        view.setOnClickListener(this)
-        share.setOnClickListener(this)
-        save.setOnClickListener(this)
+        binding.view.setOnClickListener(this)
+        binding.share.setOnClickListener(this)
+        binding.save.setOnClickListener(this)
 
         when (story.type) {
             K.TYPE_IMAGE -> loadImageStory()
@@ -62,14 +64,14 @@ class StoryOverview : Dialog, View.OnClickListener {
 
 
     private fun loadImageStory() {
-        image?.showView()
-        image?.loadUrl(story.path!!)
+        binding.image.showView()
+        binding.image.loadUrl(story.path!!)
     }
 
     private fun loadVideoStory() {
-        video?.showView()
-        video?.setUp(story.path, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "")
-        video?.thumbImageView?.loadUrl(story.path!!)
+        binding.video.showView()
+        binding.video.setUp(story.path, JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "")
+        binding.video.thumbImageView?.loadUrl(story.path!!)
     }
 
     override fun onClick(v: View?) {

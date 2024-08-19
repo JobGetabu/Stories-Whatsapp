@@ -7,9 +7,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import android.widget.ImageView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView
+import com.google.android.ads.nativetemplates.TemplateView
 import com.google.android.gms.ads.InterstitialAd
 import com.job.whatsappstories.R
 import com.job.whatsappstories.adapters.StoriesAdapter
@@ -20,11 +23,9 @@ import com.job.whatsappstories.commoners.StoryOverview
 import com.job.whatsappstories.models.Story
 import com.job.whatsappstories.utils.*
 import com.job.whatsappstories.viewmodel.WhatsModel
-import kotlinx.android.synthetic.main.fragment_images.*
-import kotlinx.android.synthetic.main.image_empty.*
-import kotlinx.android.synthetic.main.native_bottom_ad.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 
@@ -37,6 +38,11 @@ class ImagesFragment : BaseFragment(), StoryCallback {
     private lateinit var mInterstitialAd: InterstitialAd
 
     private var refreshing = false
+
+    private val rv by lazy { requireActivity().findViewById<ShimmerRecyclerView>(R.id.rv) }
+    private val imageEmptyView by lazy { requireActivity().findViewById<ImageView>(R.id.imageEmptyView) }
+    private val my_template_bottom by lazy { requireActivity().findViewById<TemplateView>(R.id.my_template_bottom) }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -52,32 +58,35 @@ class ImagesFragment : BaseFragment(), StoryCallback {
             requestStoragePermission()
         }
 
-        fragObserver(vm)
+        lifecycleScope.launch {
+            fragObserver(vm)
+        }
 
-        if (activity?.intent != null) handleInvite(activity!!, activity!!.intent)
+        if (activity?.intent != null) handleInvite(requireActivity(), requireActivity().intent)
 
-        sharedPrefs = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE)
-        sharedPrefsEditor = activity!!.getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE).edit()
+        sharedPrefs = requireActivity().getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE)
+        sharedPrefsEditor = requireActivity().getSharedPreferences(activity?.applicationContext?.packageName, MODE_PRIVATE).edit()
 
         mInterstitialAd = InterstitialAd(context)
-        initLoadAdUnit(mInterstitialAd, activity!!)
+        initLoadAdUnit(mInterstitialAd, requireActivity())
         adBizListner(mInterstitialAd)
 
     }
 
-    private fun fragObserver(model: WhatsModel) {
+    private suspend fun fragObserver(model: WhatsModel) {
 
-        model.getCurrentFile().observe(this, Observer {
+        model.getCurrentFile().observe(viewLifecycleOwner) {
             fileName = it!!
+            lifecycleScope.launch{
+                loadStories(fileName)
+            }
 
-            loadStories(fileName)
-
-        })
+        }
     }
 
     private fun initViews() {
         rv.setHasFixedSize(true)
-        val mLayoutManager = GridLayoutManager(activity!!, 3)
+        val mLayoutManager = GridLayoutManager(requireActivity(), 3)
 
         rv.layoutManager = mLayoutManager
 
@@ -93,11 +102,11 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         }
 
 
-        rv.addItemDecoration(RecyclerFormatter.GridItemDecoration(activity!!, 3, 5))
+        rv.addItemDecoration(RecyclerFormatter.GridItemDecoration(requireActivity(), 3, 5))
         rv.itemAnimator = DefaultItemAnimator()
         (rv.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
 
-        adapter = StoriesAdapter(this, activity!!)
+        adapter = StoriesAdapter(this, requireActivity())
         rv?.adapter = adapter
         rv?.showShimmerAdapter()
 
@@ -149,7 +158,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         }
     }
 
-    private fun loadStories(fileName: String) {
+    private suspend fun loadStories(fileName: String) {
         if (!storagePermissionGranted()) {
             requestStoragePermission()
             return
@@ -157,13 +166,13 @@ class ImagesFragment : BaseFragment(), StoryCallback {
 
         val dir = File(fileName)
 
-        doAsync {
+        withContext(Dispatchers.IO){
+
             val files = dir.listFiles { _, s ->
                 s.endsWith(".png") || s.endsWith(".jpg") || s.endsWith(".jpeg")
             }
 
-            uiThread {
-
+            withContext(Dispatchers.Main){
                 if (files != null && files.isNotEmpty()) {
                     hasStories()
 
@@ -184,7 +193,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
         }
     }
 
-    private fun loadStoriesGB(fileName: String) {
+    /*private fun loadStoriesGB(fileName: String) {
         if (!storagePermissionGranted()) {
             requestStoragePermission()
             return
@@ -217,7 +226,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
                 }
             }
         }
-    }
+    }*/
 
     private fun noStories() {
         rv?.hideView()
@@ -231,7 +240,7 @@ class ImagesFragment : BaseFragment(), StoryCallback {
     }
 
     override fun onStoryClicked(v: View, story: Story) {
-        val overview = StoryOverview(activity!!, story, vm)
+        val overview = StoryOverview(requireActivity(), story, vm)
         overview.show()
 
     }

@@ -11,9 +11,9 @@ import android.os.Environment
 import android.os.StrictMode
 import androidx.core.content.ContextCompat
 import com.job.whatsappstories.R
+import com.job.whatsappstories.utils.toast
 import com.mikepenz.iconics.IconicsDrawable
 import com.mikepenz.iconics.typeface.IIcon
-import org.jetbrains.anko.toast
 import timber.log.Timber
 import java.io.*
 

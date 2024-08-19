@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.iid.FirebaseInstanceId
 import com.job.whatsappstories.R
 import com.job.whatsappstories.activities.MainActivity
 import com.job.whatsappstories.commoners.Application
@@ -109,20 +108,3 @@ fun loadScreenTitlesPro(activity: Activity): Array<String> {
     return activity.resources.getStringArray(R.array.ld_activityScreenTitles_pro)
 }
 
-fun createAccount(userId: String) {
-
-    FirebaseFirestore.getInstance().collection(USER_COL)
-            .document(userId)
-            .get()
-            .addOnSuccessListener {
-                if (!it.exists()) {
-                    val token = FirebaseInstanceId.getInstance().token.toString()
-                    //use firestore
-                    val myUser = User(userId, "", 0, token, false)
-
-                    FirebaseFirestore.getInstance().collection(USER_COL)
-                            .document(userId)
-                            .set(myUser)
-                }
-            }
-}
